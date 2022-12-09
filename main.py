@@ -9,7 +9,7 @@ class PDF(FPDF):
     pass  # nothing happens when it is executed.
 
 
-num_correctas = 13.5
+num_correctas = 13
 
 def crear_codigo(value):
     if value == "A":
@@ -36,7 +36,7 @@ def crear_codigo(value):
         return -1;
 
 def procesar():
-    data = pd.read_csv("data/Resultados.csv")
+    data = pd.read_csv("data/resultados.csv")
 
     C0 = data["cod.C0"].apply(crear_codigo)
     C1 = data["cod.C1"].apply(crear_codigo)
@@ -71,7 +71,7 @@ def procesar():
     for cod in data["codigo"].values:
         correctas = 0
         for pregunta in respuestas.columns:
-            if data[data["codigo"] == cod][pregunta].values[0] == respuestas[pregunta].values[0]:
+            if data[data["codigo"] == cod][pregunta].values[0] == respuestas[pregunta].values[0] or respuestas[pregunta].values[0] == "ANULADA":
                 correctas+=1
         dataPreguntas.append([correctas, round(correctas*5.0/num_correctas,1) if (correctas/num_correctas <= 1) else 5.0])
 
@@ -139,7 +139,7 @@ def generarSalidas(data, respuestas):
             pdf.line(100, 76 + pos, 100, 68 + pos)
             pdf.text(105 + 20, 74 + pos, correcta_examen)
             pdf.line(155, 76 + pos, 155, 68 + pos)
-            if marcada_examen == correcta_examen:
+            if marcada_examen == correcta_examen or correcta_examen == "ANULADA":
                 pdf.set_text_color(0, 0, 255)
                 pdf.text(160 + 15, 74 + pos, "SI")
                 estadisticas.append(1)
@@ -155,31 +155,32 @@ def generarSalidas(data, respuestas):
 
         plt.figure(dpi=150)
         estadisticas = np.array(estadisticas)
-        con_obj = np.average(estadisticas[[0,4]])
-        con_tpi = np.average(estadisticas[[1,2,3]])
-        pra_tpi = np.average(estadisticas[[5,6,7,8,9]])
-        pra_obj = np.average(estadisticas[[10,11,12,13,14]])
-        labels = ('Teoría tipos', 'Teoría objetos', 'Práctico tipos', 'Práctico objetos')
-        values = [con_tpi, con_obj, pra_tpi, pra_obj]
+        res1 = np.average(estadisticas[[0,1,2,4]])
+        res2 = np.average(estadisticas[[5,6,7,8,9]])
+        res3 = np.average(estadisticas[[10,11,12,13,14]])
+        res4 = np.average(estadisticas[[10,11,12,13,14]])
+        labels = ('Conteo básico', 'RR Homogeneas', 'RR No homogeneas')
+        values = [res1, res2, res3]
         num_correctas_marcadas = data[data["codigo"] == cod]["correctas"].values[0]
         pdf.text(10, 80 + pos, "Número de correctas: " + str(int(num_correctas_marcadas)))
         pdf.text(10, 90 + pos, "Preguntas correctas para 5.0: " + str(num_correctas))
         pdf.set_font("Times", "B", 22)
-        pdf.text(10, 100 + pos, "Tus habilidades:")
+        pdf.text(10, 100 + pos, "Tus habilidades 0.0 a 5.0:")
         x = 0
         y = 0
+        mov = 57
         pdf.set_font("Times", "", 16)
         for label, value in zip(labels, values):
-            pdf.text(10 + x, 110 + pos + y, label + ": " + str(round(value*100,1)) + "%")
-            x += 55;
-            if x > 55*2:
+            pdf.text(10 + x, 110 + pos + y, label + ": " + str(round(value*5,1)) )
+            x += 57;
+            if x > 57*2:
                 x = 0
                 y += 10
         pdf.set_font("Times", "B", 22)
         pdf.text(10, 130 + pos, "Apuntes finales:")
 
         pdf.set_font("Times", "", 16)
-        pdf.text(10, 140 + pos, "Revisa la segunda página del informe y escribe un correo en caso de alguna incosistencia")
+        pdf.text(10, 140 + pos, "Revisa la segunda página del informe y escribe un correo en caso de alguna inconsistencia")
         pdf.text(10, 150 + pos, "Escribe un correo a: carlos.andres.delgado@correounivalle.edu.co")
         pdf.add_page()
         pdf.image("data/procesado/" + nombrearchivo+".png",x=10,y=2,w=200,h=280)
