@@ -9,7 +9,7 @@ class PDF(FPDF):
     pass  # nothing happens when it is executed.
 
 
-num_correctas = 13
+num_correctas = 13.5
 
 
 def crear_codigo(value):
@@ -63,16 +63,20 @@ def procesar():
         else:
             print("Estudiante no encontrado")
             print(data[data["codigo"] == cod])
+            print("Causa 1) El estudiante se equivocó al escribir el código")
+            print("Causa 2) Hubo un problema al escanear")
+            print("Corrige este problema antes de continuar")
+            exit(0)
 
     dataEstudiante = np.array(dataEstudiante)
     data[["nombre","correo"]] = dataEstudiante
-    datos_examen = {"nombre": "Matematicas discretas II", "fecha": "08 de Diciembre de 2022", "examen": "Parcial 3"}
+    datos_examen = {"nombre": "Fundamentos de análisis y diseño de algoritmos", "fecha": "10 de Diciembre de 2022", "examen": "Parcial 2"}
     respuestas = pd.read_csv("data/respuestas.csv")
     dataPreguntas = []
     for cod in data["codigo"].values:
         correctas = 0
         for pregunta in respuestas.columns:
-            if data[data["codigo"] == cod][pregunta].values[0] == respuestas[pregunta].values[0] or respuestas[pregunta].values[0] == "ANULADA":
+            if data[data["codigo"] == cod][pregunta].values[0] in respuestas[pregunta].values[0].split("|") or respuestas[pregunta].values[0] == "ANULADA":
                 correctas += 1
         dataPreguntas.append([correctas, round(correctas*5.0/num_correctas,1) if (correctas/num_correctas <= 1) else 5.0])
 
@@ -85,13 +89,13 @@ def procesar():
     option = int(input("Ingrese la opción: "))
 
     #Falta por configurar
-    resultados_aprendizaje = ('Conteo básico', 'RR Homogeneas', 'RR No homogeneas')
-    preg_res_aprendizaje = [[0, 1, 2, 4], [5, 6, 7, 8, 9], [10, 11, 12, 13, 14]]
+    resultados_aprendizaje = ('Estructuras de datos', 'Ordenamiento', 'Programación dinámica', 'Programación voraz')
+    preg_res_aprendizaje = [[1], [0,2,3,4], [5, 6, 7, 8, 9], [10, 11, 12, 13, 14]]
 
     if option == 1:
-        todo(data, respuestas, datos_examen,resultados_aprendizaje, preg_res_aprendizaje)
+        todo(data, respuestas, datos_examen,resultados_aprendizaje, preg_res_aprendizaje, estudiantes)
     elif option == 2:
-        generarInformeDocente(data)
+        generarInformeDocente(data, estudiantes)
     elif option == 3:
         generarInformeEstudiantes(data, respuestas, resultados_aprendizaje, preg_res_aprendizaje)
     elif option == 4:
@@ -99,8 +103,8 @@ def procesar():
     else:
         print("Opcion no válida")
 
-def todo(data, respuestas, datos_examen,resultados_aprendizaje, preg_res_aprendizaje):
-    generarInformeDocente(data)
+def todo(data, respuestas, datos_examen,resultados_aprendizaje, preg_res_aprendizaje,estudiantes):
+    generarInformeDocente(data, estudiantes)
     generarInformeEstudiantes(data, respuestas, resultados_aprendizaje, preg_res_aprendizaje)
     generarInformeGrupal(data, respuestas, datos_examen, resultados_aprendizaje, preg_res_aprendizaje)
 
@@ -232,9 +236,20 @@ def generarInformeGrupal(data, respuestas, datos_examen, res_aprendizaje, preg_r
 
     pdf.output("output/reporteGrupal.pdf", 'F')
 
-def generarInformeDocente(data):
+def generarInformeDocente(data, estudiantes):
     #Informe del profesor (csv con notas)
-    data[["nombre","codigo","correctas","nota"]].sort_values("nombre").to_csv("output/listaCalificaciones.csv")
+    data_output = estudiantes.copy()
+    data_output["correctas"] = 0
+    data_output["nota"] = 0.0
+    for idx, row in data_output.iterrows():
+        codEstudiante = row["codigo"]
+        cod = str(codEstudiante)[2:]
+        estudiante = data[data["codigo"] == cod];
+        if estudiante.shape[0] > 0:
+            data_output.at[idx, "correctas"] = estudiante["correctas"].values[0]
+            data_output.at[idx, "nota"] = estudiante["nota"].values[0]
+
+    data_output[["nombre","codigo","correctas","nota"]].sort_values("nombre").to_csv("output/listaCalificaciones.csv")
 
 def generarInformeEstudiantes(data, respuestas, res_aprendizaje, preg_res_aprendizaje):
     #Informe por estudiante
@@ -273,15 +288,15 @@ def generarInformeEstudiantes(data, respuestas, res_aprendizaje, preg_res_aprend
         estadisticas = []
         for preg in respuestas.columns.sort_values():
             marcada_examen = data[data["codigo"] == cod][preg].values[0]
-            correcta_examen = respuestas[preg].values[0]
+            correcta_examen = respuestas[preg].values[0].split("|")
             pdf.line(5, 76 +pos, 5, 68 +pos)
             pdf.text(7 + 12, 74 + pos, str(count))
             pdf.line(40, 76 + pos, 40, 68 + pos)
             pdf.text(45 + 20, 74 + pos, marcada_examen)
             pdf.line(100, 76 + pos, 100, 68 + pos)
-            pdf.text(105 + 20, 74 + pos, correcta_examen)
+            pdf.text(105 + 20, 74 + pos, "|".join(correcta_examen))
             pdf.line(155, 76 + pos, 155, 68 + pos)
-            if marcada_examen == correcta_examen or correcta_examen == "ANULADA":
+            if marcada_examen in correcta_examen or correcta_examen == "ANULADA":
                 pdf.set_text_color(0, 0, 255)
                 pdf.text(160 + 15, 74 + pos, "SI")
                 estadisticas.append(1)
