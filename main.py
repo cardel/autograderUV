@@ -9,7 +9,7 @@ class PDF(FPDF):
     pass  # nothing happens when it is executed.
 
 
-num_correctas = 13.5
+num_correctas = 20
 
 
 def crear_codigo(value):
@@ -70,15 +70,15 @@ def procesar():
 
     dataEstudiante = np.array(dataEstudiante)
     data[["nombre","correo"]] = dataEstudiante
-    datos_examen = {"nombre": "Fundamentos de análisis y diseño de algoritmos", "fecha": "10 de Diciembre de 2022", "examen": "Parcial 2"}
+    datos_examen = {"nombre": "Matemáticas Discretas II", "fecha": "22 de Abril de 2023", "examen": "Parcial 1"}
     respuestas = pd.read_csv("data/respuestas.csv")
     dataPreguntas = []
     for cod in data["codigo"].values:
         correctas = 0
         for pregunta in respuestas.columns:
-            if data[data["codigo"] == cod][pregunta].values[0] in respuestas[pregunta].values[0].split("|") or respuestas[pregunta].values[0] == "ANULADA":
+            if data[data["codigo"] == cod][pregunta].values[0] in respuestas[pregunta].values[0].split("|") or "ANULADA" in respuestas[pregunta].values[0]:
                 correctas += 1
-        dataPreguntas.append([correctas, round(correctas*5.0/num_correctas,1) if (correctas/num_correctas <= 1) else 5.0])
+        dataPreguntas.append([correctas, round(correctas*5.0/num_correctas+0.001,1) if (correctas/num_correctas <= 1) else 5.0])
 
     data[["correctas", "nota"]] = dataPreguntas
     print("Que desea")
@@ -89,9 +89,9 @@ def procesar():
     option = int(input("Ingrese la opción: "))
 
     #Falta por configurar
-    resultados_aprendizaje = ('Estructuras de datos', 'Ordenamiento', 'Programación dinámica', 'Programación voraz')
-    preg_res_aprendizaje = [[1], [0,2,3,4], [5, 6, 7, 8, 9], [10, 11, 12, 13, 14]]
-
+    resultados_aprendizaje = ('RA1.1 Técnicas basicas de conteo', 'RA1.2 Permutaciones y combinarios', 'RA 1.3 Relaciones de recurrencia')
+    preg_res_aprendizaje = [[0,1], [2,3], [4,5,6, 7, 8, 9], [10,11, 12, 13, 14, 15,16,17,18,19]]
+	
     if option == 1:
         todo(data, respuestas, datos_examen,resultados_aprendizaje, preg_res_aprendizaje, estudiantes)
     elif option == 2:
@@ -125,7 +125,7 @@ def generarInformeGrupal(data, respuestas, datos_examen, res_aprendizaje, preg_r
     plt.grid(True, alpha=0.3, linestyle="--")
     plt.savefig("output/normal.png")
 
-    pdf = PDF(format='letter')
+    pdf = PDF(format='legal')
     pdf.set_author('Carlos Delgado carlos.andres.delgado@correounivalle.edu.co')
     pdf.set_title("Informe grupal")
 
@@ -220,8 +220,8 @@ def generarInformeGrupal(data, respuestas, datos_examen, res_aprendizaje, preg_r
         pdf.set_font("Times", "B", 16)
         pdf.text(10, 35 + y, label)
         pdf.set_font("Times", "", 14)
-        pdf.text(80, 35 + y, " Promedio: " + str(round(value * 5, 2)))
-        pdf.text(130, 35 + y, "Dev estándar: " + str(round(dstd * 5, 2)))
+        pdf.text(100, 35 + y, " Promedio: " + str(round(value * 5, 2)))
+        pdf.text(150, 35 + y, "Dev estándar: " + str(round(dstd * 5, 2)))
         y += movy
 
     pdf.text(10, 35 + y, "Anotaciones:")
@@ -258,7 +258,7 @@ def generarInformeEstudiantes(data, respuestas, res_aprendizaje, preg_res_aprend
         nombre = data[data["codigo"]==cod]["nombre"].values[0]
         codigo = data[data["codigo"] == cod]["codigo"].values[0]
 
-        pdf = PDF(format='letter')
+        pdf = PDF(format='legal')
         pdf.set_author('Carlos Delgado carlos.andres.delgado@correounivalle.edu.co')
         pdf.set_title("Informe de calificaciones")
         pdf.add_page()
@@ -296,7 +296,7 @@ def generarInformeEstudiantes(data, respuestas, res_aprendizaje, preg_res_aprend
             pdf.line(100, 76 + pos, 100, 68 + pos)
             pdf.text(105 + 20, 74 + pos, "|".join(correcta_examen))
             pdf.line(155, 76 + pos, 155, 68 + pos)
-            if marcada_examen in correcta_examen or correcta_examen == "ANULADA":
+            if marcada_examen in correcta_examen or "ANULADA" in correcta_examen:
                 pdf.set_text_color(0, 0, 255)
                 pdf.text(160 + 15, 74 + pos, "SI")
                 estadisticas.append(1)
@@ -319,6 +319,7 @@ def generarInformeEstudiantes(data, respuestas, res_aprendizaje, preg_res_aprend
         pdf.text(10, 80 + pos, "Número de correctas: " + str(int(num_correctas_marcadas)))
         pdf.text(10, 90 + pos, "Preguntas correctas para 5.0: " + str(num_correctas))
         pdf.set_font("Times", "B", 22)
+        pos+=10
         pdf.text(10, 100 + pos, "Tus habilidades 0.0 a 5.0:")
         x = 0
         y = 0
@@ -327,13 +328,10 @@ def generarInformeEstudiantes(data, respuestas, res_aprendizaje, preg_res_aprend
         pdf.set_font("Times", "", 16)
         for label, value in zip(res_aprendizaje, val_res_aprendizaje):
             pdf.text(10 + x, 110 + pos + y, label + ": " + str(round(value*5,1)) )
-            x += movx;
-            if x > movx*2:
-                x = 0
-                y += movy
+            y += movy
+        pos+=y
         pdf.set_font("Times", "B", 22)
         pdf.text(10, 130 + pos, "Apuntes finales:")
-
         pdf.set_font("Times", "", 16)
         pdf.text(10, 140 + pos, "Revisa la segunda página del informe y escribe un correo en caso de alguna inconsistencia")
         pdf.text(10, 150 + pos, "Escribe un correo a: carlos.andres.delgado@correounivalle.edu.co")
