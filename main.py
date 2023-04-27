@@ -143,9 +143,9 @@ def generarInformeGrupal(data, respuestas, datos_examen, res_aprendizaje, preg_r
             num_preg+=1
         count+=1
 
-    promedio_preg = np.mean(preguntas, axis = 1)
-    std_preg = np.std(preguntas, axis = 1)
-    porcentaje_preg = 100*np.sum(preguntas, axis = 1) / num_preg
+    promedio_preg = np.mean(preguntas, axis = 0)
+    std_preg = np.std(preguntas, axis = 0)
+    porcentaje_preg = 100*np.sum(preguntas, axis = 0) / len(preguntas)
     pdf.add_page()
     pdf.set_font("Times", "B", 22)
     pdf.text(65, 12, "Informe grupal parcial")
@@ -184,6 +184,7 @@ def generarInformeGrupal(data, respuestas, datos_examen, res_aprendizaje, preg_r
             pdf.line(5, 76 + pos, 5, 68 + pos)
             pdf.text(7 + 12, 74 + pos, str(count))
             pdf.line(40, 76 + pos, 40, 68 + pos)
+            print(promedio_preg, idx_preg)
             pdf.text(45 + 20, 74 + pos, str(round(5*promedio_preg[idx_preg],2)))
             pdf.line(100, 76 + pos, 100, 68 + pos)
             pdf.text(105 + 20, 74 + pos, str(round(5*std_preg[idx_preg],2)))
