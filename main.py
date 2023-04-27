@@ -184,7 +184,6 @@ def generarInformeGrupal(data, respuestas, datos_examen, res_aprendizaje, preg_r
             pdf.line(5, 76 + pos, 5, 68 + pos)
             pdf.text(7 + 12, 74 + pos, str(count))
             pdf.line(40, 76 + pos, 40, 68 + pos)
-            print(promedio_preg, idx_preg)
             pdf.text(45 + 20, 74 + pos, str(round(5*promedio_preg[idx_preg],2)))
             pdf.line(100, 76 + pos, 100, 68 + pos)
             pdf.text(105 + 20, 74 + pos, str(round(5*std_preg[idx_preg],2)))
