@@ -58,8 +58,9 @@ def procesar():
         codEstudiante = int("20" + cod)
         nombre = estudiantes[estudiantes["codigo"] == codEstudiante]["nombre"].values.tolist()
         correo = estudiantes[estudiantes["codigo"] == codEstudiante]["correo"].values.tolist()
+        programa = estudiantes[estudiantes["codigo"] == codEstudiante]["programa"].values.tolist()
         if len(nombre) > 0:
-            dataEstudiante.append([nombre[0],correo[0]])
+            dataEstudiante.append([nombre[0],correo[0],str(cod)+"-"+str(programa[0])])
         else:
             print("Estudiante no encontrado")
             print(data[data["codigo"] == cod])
@@ -69,10 +70,11 @@ def procesar():
             exit(0)
 
     dataEstudiante = np.array(dataEstudiante)
-    data[["nombre","correo"]] = dataEstudiante
-    datos_examen = {"nombre": "Matemáticas Discretas II", "fecha": "22 de Abril de 2023", "examen": "Parcial 1"}
+    data[["nombre","correo","numeroID"]] = dataEstudiante
+    datos_examen = {"nombre": "Fundamentos de Lenguajes de programación", "fecha": "26 de Abril de 2023", "examen": "Parcial 1"}
     respuestas = pd.read_csv("data/respuestas.csv")
     dataPreguntas = []
+
     for cod in data["codigo"].values:
         correctas = 0
         for pregunta in respuestas.columns:
@@ -89,8 +91,8 @@ def procesar():
     option = int(input("Ingrese la opción: "))
 
     #Falta por configurar
-    resultados_aprendizaje = ('RA1.1 Técnicas basicas de conteo', 'RA1.2 Permutaciones y combinarios', 'RA 1.3 Relaciones de recurrencia')
-    preg_res_aprendizaje = [[0,1], [2,3], [4,5,6, 7, 8, 9], [10,11, 12, 13, 14, 15,16,17,18,19]]
+    resultados_aprendizaje = ('Especificación de datos', 'Interpretador básico', 'Semántica de lenguajes')
+    preg_res_aprendizaje = [[0,1,2,3,4], [5,6, 7, 8, 9], [10,11, 12, 13, 14, 15,16,17,18,19]]
 	
     if option == 1:
         todo(data, respuestas, datos_examen,resultados_aprendizaje, preg_res_aprendizaje, estudiantes)
@@ -237,19 +239,22 @@ def generarInformeGrupal(data, respuestas, datos_examen, res_aprendizaje, preg_r
     pdf.output("output/reporteGrupal.pdf", 'F')
 
 def generarInformeDocente(data, estudiantes):
-    #Informe del profesor (csv con notas)
-    data_output = estudiantes.copy()
-    data_output["correctas"] = 0
-    data_output["nota"] = 0.0
-    for idx, row in data_output.iterrows():
-        codEstudiante = row["codigo"]
-        cod = str(codEstudiante)[2:]
-        estudiante = data[data["codigo"] == cod];
-        if estudiante.shape[0] > 0:
-            data_output.at[idx, "correctas"] = estudiante["correctas"].values[0]
-            data_output.at[idx, "nota"] = estudiante["nota"].values[0]
+	#Informe del profesor (csv con notas)
+	data_output = estudiantes.copy()
+	data_output["correctas"] = 0
+	data_output["nota"] = 0.0
+	for idx, row in data_output.iterrows():
+		codEstudiante = row["codigo"]
+		cod = str(codEstudiante)[2:]
+		estudiante = data[data["codigo"] == cod];
+		if estudiante.shape[0] > 0:
+			data_output.at[idx, "correctas"] = estudiante["correctas"].values[0]
+			data_output.at[idx, "nota"] = estudiante["nota"].values[0]
+			data_output.at[idx, "numeroID"] = estudiante["numeroID"].values[0]
+		else:
+			data_output.at[idx, "numeroID"] = str(row["codigo"])[2:]+"-"+str(row["programa"])
 
-    data_output[["nombre","codigo","correctas","nota"]].sort_values("nombre").to_csv("output/listaCalificaciones.csv")
+	data_output[["nombre","codigo","correctas","nota","numeroID"]].sort_values("nombre").to_csv("output/listaCalificaciones.csv")
 
 def generarInformeEstudiantes(data, respuestas, res_aprendizaje, preg_res_aprendizaje):
     #Informe por estudiante
@@ -314,7 +319,6 @@ def generarInformeEstudiantes(data, respuestas, res_aprendizaje, preg_res_aprend
         val_res_aprendizaje = []
         for pre in preg_res_aprendizaje:
             val_res_aprendizaje.append(np.average(estadisticas[pre]))
-
         num_correctas_marcadas = data[data["codigo"] == cod]["correctas"].values[0]
         pdf.text(10, 80 + pos, "Número de correctas: " + str(int(num_correctas_marcadas)))
         pdf.text(10, 90 + pos, "Preguntas correctas para 5.0: " + str(num_correctas))
