@@ -4,7 +4,6 @@ import numpy as np
 import scipy
 from fpdf import FPDF
 
-
 class PDF(FPDF):
     pass  # nothing happens when it is executed.
 
@@ -71,15 +70,22 @@ def procesar():
 
     dataEstudiante = np.array(dataEstudiante)
     data[["nombre","correo","numeroID"]] = dataEstudiante
-    datos_examen = {"nombre": "Fundamentos de Lenguajes de programación", "fecha": "26 de Abril de 2023", "examen": "Parcial 1"}
+    datos_examen = {"nombre": "Matemáticas Discretas II", "fecha": "03 de Julio de 2023", "examen": "Parcial 2"}
     respuestas = pd.read_csv("data/respuestas.csv")
     dataPreguntas = []
-
     for cod in data["codigo"].values:
-        correctas = 0
+        correctas = 0.0
         for pregunta in respuestas.columns:
-            if data[data["codigo"] == cod][pregunta].values[0] in respuestas[pregunta].values[0].split("|") or "ANULADA" in respuestas[pregunta].values[0]:
-                correctas += 1
+            factor = 1
+            for i in range(0,3):
+                if type(respuestas[pregunta].values[i]) is not str:
+                    continue
+                if "ANULADA" in respuestas[pregunta].values[i]:
+                    correctas+=1
+                    continue
+                if data[data["codigo"] == cod][pregunta].values[0] in respuestas[pregunta].values[i].split("|"):
+                    correctas += factor
+                factor -= 0.25 #Esto es cuando tenemos valores diferentes
         dataPreguntas.append([correctas, round(correctas*5.0/num_correctas+0.001,1) if (correctas/num_correctas <= 1) else 5.0])
 
     data[["correctas", "nota"]] = dataPreguntas
@@ -91,8 +97,8 @@ def procesar():
     option = int(input("Ingrese la opción: "))
 
     #Falta por configurar
-    resultados_aprendizaje = ('Especificación de datos', 'Interpretador básico', 'Semántica de lenguajes')
-    preg_res_aprendizaje = [[0,1,2,3,4], [5,6, 7, 8, 9], [10,11, 12, 13, 14, 15,16,17,18,19]]
+    resultados_aprendizaje = ('Grafo introducción', 'Representación y conectividad', 'Isomorfismos y algoritmos','Arboles y algoritmos')
+    preg_res_aprendizaje = [[0,1,2,3], [4,5,6, 7, 8, 9], [10,11, 12, 13, 14], [15,16,17,18,19]]
 	
     if option == 1:
         todo(data, respuestas, datos_examen,resultados_aprendizaje, preg_res_aprendizaje, estudiantes)
@@ -144,7 +150,6 @@ def generarInformeGrupal(data, respuestas, datos_examen, res_aprendizaje, preg_r
                 preguntas[count, num_preg] = 1
             num_preg+=1
         count+=1
-
     promedio_preg = np.mean(preguntas, axis = 0)
     std_preg = np.std(preguntas, axis = 0)
     porcentaje_preg = 100*np.sum(preguntas, axis = 0) / len(preguntas)
@@ -192,14 +197,16 @@ def generarInformeGrupal(data, respuestas, datos_examen, res_aprendizaje, preg_r
             pdf.line(155, 76 + pos, 155, 68 + pos)
 
             correcta = porcentaje_preg[idx_preg]
+            
+
+            pdf.line(5, 76 + pos, 200, 76 + pos)
+            pdf.line(200, 76 + pos, 200, 68 + pos)
             if correcta >= 60:
                 pdf.set_text_color(0, 0, 255)
             else:
                 pdf.set_text_color(255, 0, 0)
-            pdf.set_text_color(0, 0, 0)
-            pdf.line(5, 76 + pos, 200, 76 + pos)
-            pdf.line(200, 76 + pos, 200, 68 + pos)
             pdf.text(160 + 15, 74 + pos, str(round(correcta,2)) + "%")
+            pdf.set_text_color(0, 0, 0)
             pos += 6
         idx_preg+=1
         count+=1
@@ -294,17 +301,38 @@ def generarInformeEstudiantes(data, respuestas, res_aprendizaje, preg_res_aprend
         for preg in respuestas.columns.sort_values():
             marcada_examen = data[data["codigo"] == cod][preg].values[0]
             correcta_examen = respuestas[preg].values[0].split("|")
+            correcta_examen_75 = respuestas[preg].values[1].split("|") if type(respuestas[preg].values[1]) is str else []
+            correcta_examen_50 = respuestas[preg].values[2].split("|") if type(respuestas[preg].values[2]) is str else []
+            correcta_examen_25 = respuestas[preg].values[3].split("|") if type(respuestas[preg].values[3]) is str else []
             pdf.line(5, 76 +pos, 5, 68 +pos)
             pdf.text(7 + 12, 74 + pos, str(count))
             pdf.line(40, 76 + pos, 40, 68 + pos)
             pdf.text(45 + 20, 74 + pos, marcada_examen)
             pdf.line(100, 76 + pos, 100, 68 + pos)
-            pdf.text(105 + 20, 74 + pos, "|".join(correcta_examen))
+            #Agregar otros factores
+            otros = ""
+            otros += " (75% "+"|".join(correcta_examen_75)+")" if correcta_examen_75 != [] else ""
+            otros += " (50% "+"|".join(correcta_examen_50)+")" if correcta_examen_50 != [] else ""
+            otros += " (25% "+ "|".join(correcta_examen_25)+")" if correcta_examen_25 != [] else ""
+            factor = len(otros)+3 if len(otros)>0 else 0
+            pdf.text(105 + 20 - factor, 74 + pos, "|".join(correcta_examen)+otros)
             pdf.line(155, 76 + pos, 155, 68 + pos)
             if marcada_examen in correcta_examen or "ANULADA" in correcta_examen:
                 pdf.set_text_color(0, 0, 255)
                 pdf.text(160 + 15, 74 + pos, "SI")
                 estadisticas.append(1)
+            elif marcada_examen in correcta_examen_75:
+                pdf.set_text_color(0, 255, 0)
+                pdf.text(160 + 15, 74 + pos, "75%")
+                estadisticas.append(0.75)
+            elif marcada_examen in correcta_examen_50:
+                pdf.set_text_color(0, 255, 0)
+                pdf.text(160 + 15, 74 + pos, "50%")
+                estadisticas.append(0.5)
+            elif marcada_examen in correcta_examen_25:
+                pdf.set_text_color(0, 255, 0)
+                pdf.text(160 + 15, 74 + pos, "25%")
+                estadisticas.append(0.25)
             else:
                 pdf.set_text_color(255, 0, 0)
                 pdf.text(160 + 15, 74 + pos, "NO")
@@ -319,8 +347,8 @@ def generarInformeEstudiantes(data, respuestas, res_aprendizaje, preg_res_aprend
         val_res_aprendizaje = []
         for pre in preg_res_aprendizaje:
             val_res_aprendizaje.append(np.average(estadisticas[pre]))
-        num_correctas_marcadas = data[data["codigo"] == cod]["correctas"].values[0]
-        pdf.text(10, 80 + pos, "Número de correctas: " + str(int(num_correctas_marcadas)))
+        num_correctas_marcadas = np.sum(estadisticas)
+        pdf.text(10, 80 + pos, "Número de correctas: " + str(num_correctas_marcadas))
         pdf.text(10, 90 + pos, "Preguntas correctas para 5.0: " + str(num_correctas))
         pdf.set_font("Times", "B", 22)
         pos+=10
