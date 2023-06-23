@@ -9,7 +9,11 @@ class PDF(FPDF):
 
 
 num_correctas = 20
-
+fecha = '21 de Junio de 2023'
+materia = "Fundamentos de lenguajes de programación"
+examen = "Parcial 2"
+resultados_aprendizaje = ('Teoría objetos y tipos', 'Paso por referencia', 'Inferencia de tipos', 'objetos')
+preg_res_aprendizaje = [[0,1,2,3], [4,5,6, 7, 8, 9], [10,11, 12, 13, 14],[15,16, 17, 18, 19]]
 
 def crear_codigo(value):
     if value == "A":
@@ -33,18 +37,20 @@ def crear_codigo(value):
     elif value == "J":
         return "9"
     else:
-        return -1;
+        return -1
 
 def procesar():
     data = pd.read_csv("data/resultados.csv")
+	    
+    data.drop(columns=[], inplace=True)
 
-    C0 = data["cod.C0"].apply(crear_codigo)
-    C1 = data["cod.C1"].apply(crear_codigo)
-    C2 = data["cod.C2"].apply(crear_codigo)
-    C3 = data["cod.C3"].apply(crear_codigo)
-    C4 = data["cod.C4"].apply(crear_codigo)
-    C5 = data["cod.C5"].apply(crear_codigo)
-    C6 = data["cod.C6"].apply(crear_codigo)
+    C0 = data["cod.Pregunta001"].apply(crear_codigo)
+    C1 = data["cod.Pregunta002"].apply(crear_codigo)
+    C2 = data["cod.Pregunta003"].apply(crear_codigo)
+    C3 = data["cod.Pregunta004"].apply(crear_codigo)
+    C4 = data["cod.Pregunta005"].apply(crear_codigo)
+    C5 = data["cod.Pregunta006"].apply(crear_codigo)
+    C6 = data["cod.Pregunta007"].apply(crear_codigo)
 
     codigo = pd.DataFrame([C0,C1,C2,C3,C4,C5,C6]).transpose()
     codigo["codigo"] = codigo.apply("".join, axis=1)
@@ -70,7 +76,7 @@ def procesar():
 
     dataEstudiante = np.array(dataEstudiante)
     data[["nombre","correo","numeroID"]] = dataEstudiante
-    datos_examen = {"nombre": "Matemáticas Discretas II", "fecha": "03 de Julio de 2023", "examen": "Parcial 2"}
+    datos_examen = {"nombre": materia, "fecha": fecha, "examen": examen}
     respuestas = pd.read_csv("data/respuestas.csv")
     dataPreguntas = []
     for cod in data["codigo"].values:
@@ -96,9 +102,7 @@ def procesar():
     print("4. Solo informe grupal")
     option = int(input("Ingrese la opción: "))
 
-    #Falta por configurar
-    resultados_aprendizaje = ('Grafo introducción', 'Representación y conectividad', 'Isomorfismos y algoritmos','Arboles y algoritmos')
-    preg_res_aprendizaje = [[0,1,2,3], [4,5,6, 7, 8, 9], [10,11, 12, 13, 14], [15,16,17,18,19]]
+
 	
     if option == 1:
         todo(data, respuestas, datos_examen,resultados_aprendizaje, preg_res_aprendizaje, estudiantes)
