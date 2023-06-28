@@ -1,3 +1,9 @@
+"""
+Carlos Andres Delgado
+Script para calificar examenes
+Fecha: 2023-06-27
+Versión: 1.0
+"""
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,14 +14,18 @@ class PDF(FPDF):
     pass  # nothing happens when it is executed.
 
 
-num_correctas = 20
-fecha = '21 de Junio de 2023'
-materia = "Fundamentos de lenguajes de programación"
+num_correctas = 15
+fecha = '27 de Junio de 2023'
+materia = "Fundamentos de análisis y diseño de algoritmos"
 examen = "Parcial 2"
-resultados_aprendizaje = ('Teoría objetos y tipos', 'Paso por referencia', 'Inferencia de tipos', 'objetos')
-preg_res_aprendizaje = [[0,1,2,3], [4,5,6, 7, 8, 9], [10,11, 12, 13, 14],[15,16, 17, 18, 19]]
+resultados_aprendizaje = ('Estructuras de datos', 'Ordenamiento', 'Estrategias algoritmicas')
+preg_res_aprendizaje = [[0,1,2,3], [4,5,6, 7, 8, 9], [10,11, 12, 13, 14]]
+num_examenes = 3
+codificacion_examenes = ["A","B","C","D"]
+
 
 def crear_codigo(value):
+    value = value.replace(" ", "")
     if value == "A":
         return "0"
     elif value == "B":
@@ -42,7 +52,8 @@ def crear_codigo(value):
 def procesar():
     data = pd.read_csv("data/resultados.csv")
 	    
-    data.drop(columns=[], inplace=True)
+    tipo_parcial = data["tipo.Pregunta023"].apply(crear_codigo)
+    data.drop(columns=["tipo.Pregunta023"], inplace=True)
 
     C0 = data["cod.Pregunta001"].apply(crear_codigo)
     C1 = data["cod.Pregunta002"].apply(crear_codigo)
@@ -55,6 +66,7 @@ def procesar():
     codigo = pd.DataFrame([C0,C1,C2,C3,C4,C5,C6]).transpose()
     codigo["codigo"] = codigo.apply("".join, axis=1)
     data["codigo"] = codigo["codigo"];
+    data["examen"] = tipo_parcial
 
     estudiantes = pd.read_csv("data/listadoClase.csv")
 
@@ -77,10 +89,16 @@ def procesar():
     dataEstudiante = np.array(dataEstudiante)
     data[["nombre","correo","numeroID"]] = dataEstudiante
     datos_examen = {"nombre": materia, "fecha": fecha, "examen": examen}
-    respuestas = pd.read_csv("data/respuestas.csv")
+    
+    respuestas_totales = []
+
+    for i in range(num_examenes):
+        respuestas_totales.append(pd.read_csv("data/respuestas"+codificacion_examenes[i]+".csv"))
+    
     dataPreguntas = []
-    for cod in data["codigo"].values:
+    for cod,tipo_examen in zip(data["codigo"].values, data["examen"].values):
         correctas = 0.0
+        respuestas = respuestas_totales[int(tipo_examen)]
         for pregunta in respuestas.columns:
             factor = 1
             for i in range(0,3):
@@ -101,26 +119,26 @@ def procesar():
     print("3. Solo informes para estudiantes")
     print("4. Solo informe grupal")
     option = int(input("Ingrese la opción: "))
-
-
+    
 	
     if option == 1:
-        todo(data, respuestas, datos_examen,resultados_aprendizaje, preg_res_aprendizaje, estudiantes)
+        todo(data, respuestas_totales, datos_examen,resultados_aprendizaje, preg_res_aprendizaje, estudiantes)
     elif option == 2:
         generarInformeDocente(data, estudiantes)
     elif option == 3:
-        generarInformeEstudiantes(data, respuestas, resultados_aprendizaje, preg_res_aprendizaje)
+        generarInformeEstudiantes(data, respuestas_totales, resultados_aprendizaje, preg_res_aprendizaje)
     elif option == 4:
-        generarInformeGrupal(data, respuestas, datos_examen, resultados_aprendizaje, preg_res_aprendizaje)
+        pass
+        #generarInformeGrupal(data, respuestas_totales, datos_examen, resultados_aprendizaje, preg_res_aprendizaje)
     else:
         print("Opcion no válida")
 
-def todo(data, respuestas, datos_examen,resultados_aprendizaje, preg_res_aprendizaje,estudiantes):
+def todo(data, respuestas_totales, datos_examen,resultados_aprendizaje, preg_res_aprendizaje,estudiantes):
     generarInformeDocente(data, estudiantes)
-    generarInformeEstudiantes(data, respuestas, resultados_aprendizaje, preg_res_aprendizaje)
-    generarInformeGrupal(data, respuestas, datos_examen, resultados_aprendizaje, preg_res_aprendizaje)
+    generarInformeEstudiantes(data, respuestas_totales, resultados_aprendizaje, preg_res_aprendizaje)
+    #generarInformeGrupal(data, respuestas_totales, datos_examen, resultados_aprendizaje, preg_res_aprendizaje)
 
-def generarInformeGrupal(data, respuestas, datos_examen, res_aprendizaje, preg_res_aprendizaje):
+def generarInformeGrupal(data, respuestas_totales, datos_examen, res_aprendizaje, preg_res_aprendizaje):
     plt.figure(dpi=150)
 
     final_mean = data["nota"].mean()
@@ -143,10 +161,11 @@ def generarInformeGrupal(data, respuestas, datos_examen, res_aprendizaje, preg_r
 
 
     total_grupo = data["codigo"].values.shape[0]
-    preguntas = np.zeros((total_grupo, respuestas.shape[1]))
+    preguntas = np.zeros((total_grupo, respuestas_totales[0].shape[1]))
     count = 0
-    for cod in data["codigo"].values:
+    for cod,examen in zip(data["codigo"].values,data["examen"].values):
         num_preg = 0
+        respuestas = respuestas_totales[int(tipo_examen)]
         for preg in respuestas.columns.sort_values():
             marcada_examen = data[data["codigo"] == cod][preg].values[0]
             correcta_examen = respuestas[preg].values[0]
@@ -267,24 +286,28 @@ def generarInformeDocente(data, estudiantes):
 
 	data_output[["nombre","codigo","correctas","nota","numeroID"]].sort_values("nombre").to_csv("output/listaCalificaciones.csv")
 
-def generarInformeEstudiantes(data, respuestas, res_aprendizaje, preg_res_aprendizaje):
+def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_res_aprendizaje):
     #Informe por estudiante
-    for cod in data["codigo"].values:
+    for cod,tipo_examen in zip(data["codigo"].values, data["examen"].values):
+        respuestas = respuestas_totales[int(tipo_examen)]
         nombrearchivo = data[data["codigo"]==cod]["Nombre de archivo"].values[0]
         nombre = data[data["codigo"]==cod]["nombre"].values[0]
         codigo = data[data["codigo"] == cod]["codigo"].values[0]
+
+        nombre_examen = codificacion_examenes[int(tipo_examen)]
 
         pdf = PDF(format='legal')
         pdf.set_author('Carlos Delgado carlos.andres.delgado@correounivalle.edu.co')
         pdf.set_title("Informe de calificaciones")
         pdf.add_page()
         pdf.set_font("Times","B",22)
-        pdf.text(65,12,"Informe de exámen parcial")
+        pdf.text(65,10,"Informe de exámen parcial")
         pdf.set_font("Times", "B", 18)
-        pdf.text(5,28,"Estudiante: " + data[data["codigo"] == cod]["nombre"].values[0])
-        pdf.text(5,38,"Código: " + str(data[data["codigo"] == cod]["codigo"].values[0]))
-        pdf.text(5,48,"Nota: " + str(data[data["codigo"] == cod]["nota"].values[0]))
-        pdf.text(65,58,"Informe de respuestas")
+        pdf.text(5,24,"Estudiante: " + data[data["codigo"] == cod]["nombre"].values[0])
+        pdf.text(5,34,"Código: " + str(data[data["codigo"] == cod]["codigo"].values[0]))
+        pdf.text(5,44,"Nota: " + str(data[data["codigo"] == cod]["nota"].values[0]))
+        pdf.text(5,54,"Examen: " + nombre_examen)
+        pdf.text(65,64,"Informe de respuestas")
 
         pdf.set_font("Times", "", 16)
         pdf.line(5, 76, 5, 68)
