@@ -10,6 +10,9 @@ import numpy as np
 import scipy
 from fpdf import FPDF
 
+
+
+
 class PDF(FPDF):
     pass  # nothing happens when it is executed.
 
@@ -23,31 +26,6 @@ preg_res_aprendizaje = [[0,1,2,3], [4,5,6, 7, 8, 9], [10,11, 12, 13, 14]]
 num_examenes = 3
 codificacion_examenes = ["A","B","C","D"]
 
-
-def crear_codigo(value):
-    value = value.replace(" ", "")
-    if value == "A":
-        return "0"
-    elif value == "B":
-        return "1"
-    elif value == "C":
-        return "2"
-    elif value == "D":
-        return "3"
-    elif value == "E":
-        return "4"
-    elif value == "F":
-        return "5"
-    elif value == "G":
-        return "6"
-    elif value == "H":
-        return "7"
-    elif value == "I":
-        return "8"
-    elif value == "J":
-        return "9"
-    else:
-        return -1
 
 def procesar():
     data = pd.read_csv("data/resultados.csv")
