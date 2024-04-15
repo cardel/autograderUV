@@ -39,7 +39,7 @@ def todo(data, respuestas_totales, datos_examen,resultados_aprendizaje, preg_res
 
 
 if __name__ == '__main__':
-    data = procesar(num_correctas, num_examenes, codificacion_examenes)
+    data = procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha, examen)
     print("Que desea")
     print("1. Generar todo")
     print("2. Solo informe del docente")

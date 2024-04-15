@@ -28,9 +28,9 @@ def crear_codigo(value):
         return -1
 
 
-def procesar(num_correctas, num_examenes, codificacion_examenes):
+def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha, examen):
     data = pd.read_csv("data/resultados.csv")
-	tipo_parcial = data["tipo.Pregunta023"].apply(crear_codigo)
+    tipo_parcial = data["tipo.Pregunta023"].apply(crear_codigo)
     data.drop(columns=["tipo.Pregunta023"], inplace=True)
 
     C0 = data["cod.Pregunta001"].apply(crear_codigo)
@@ -40,8 +40,6 @@ def procesar(num_correctas, num_examenes, codificacion_examenes):
     C4 = data["cod.Pregunta005"].apply(crear_codigo)
     C5 = data["cod.Pregunta006"].apply(crear_codigo)
     C6 = data["cod.Pregunta007"].apply(crear_codigo)
-
-    
 
     codigo = pd.DataFrame([C0,C1,C2,C3,C4,C5,C6]).transpose()
     codigo["codigo"] = codigo.apply("".join, axis=1)

@@ -1,5 +1,5 @@
 import scipy
-import mathplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import numpy as np
 
 def generarInformeGrupal(data, respuestas_totales, datos_examen, res_aprendizaje, preg_res_aprendizaje,estudiantes_tipo_examen, num_examenes, PDF):
