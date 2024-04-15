@@ -80,17 +80,17 @@ def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha,
         respuestas = respuestas_totales[int(tipo_examen)]
         estudiantes_tipo_examen[int(tipo_examen)] += 1
         for pregunta in respuestas.columns:
-            factor = 1
-            for i in range(0,3):
-                if type(respuestas[pregunta].values[i]) is not str:
-                    continue
-                if "ANULADA" in respuestas[pregunta].values[i]:
-                    correctas+=1
-                    continue
-                if data[data["codigo"] == cod][pregunta].values[0] in respuestas[pregunta].values[i].split("|"):
-                    correctas += factor
-                factor -= 0.25 #Esto es cuando tenemos valores diferentes
-        dataPreguntas.append([correctas, round(correctas*5.0/num_correctas+0.001,1) if (correctas/num_correctas <= 1) else 5.0])
+            if "ANULADA" in respuestas[pregunta]:
+                correctas+=1
+                continue
+            respuestas_correctas =  respuestas[pregunta].values[0].split("|")
+            factor = len(respuestas_correctas)
+            respuestas_marcadas = data[data["codigo"] == cod][pregunta].values[0].split("|")
+            for resp in respuestas_marcadas:
+                if resp in respuestas_correctas:
+                    correctas += 1.0/factor
 
+        dataPreguntas.append([correctas, round(correctas*5.0/num_correctas+0.001,1) if (correctas/num_correctas <= 1) else 5.0])
+    print(dataPreguntas)
     data[["correctas", "nota"]] = dataPreguntas
-    return data
+    return data, respuestas_totales, datos_examen, estudiantes_tipo_examen, estudiantes

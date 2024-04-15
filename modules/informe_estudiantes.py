@@ -1,5 +1,6 @@
+import numpy as np
 
-def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_res_aprendizaje, PDF):
+def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_res_aprendizaje, codificacion_examenes, num_correctas, PDF):
     #Informe por estudiante
     for cod,tipo_examen in zip(data["codigo"].values, data["examen"].values):
         respuestas = respuestas_totales[int(tipo_examen)]
@@ -31,7 +32,7 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
         pdf.line(100, 76, 100, 68)
         pdf.text(105, 74, "Respuesta correcta")
         pdf.line(155, 76, 155, 68)
-        pdf.text(160, 74, "¿Es correcta?")
+        pdf.text(160, 74, "Desmpeño")
         pdf.line(5, 76, 200, 76)
         pdf.line(200, 76, 200, 68)
 
@@ -41,9 +42,6 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
         for preg in respuestas.columns.sort_values():
             marcada_examen = data[data["codigo"] == cod][preg].values[0]
             correcta_examen = respuestas[preg].values[0].split("|")
-            correcta_examen_75 = respuestas[preg].values[1].split("|") if type(respuestas[preg].values[1]) is str else []
-            correcta_examen_50 = respuestas[preg].values[2].split("|") if type(respuestas[preg].values[2]) is str else []
-            correcta_examen_25 = respuestas[preg].values[3].split("|") if type(respuestas[preg].values[3]) is str else []
             pdf.line(5, 76 +pos, 5, 68 +pos)
             pdf.text(7 + 12, 74 + pos, str(count))
             pdf.line(40, 76 + pos, 40, 68 + pos)
@@ -51,31 +49,26 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
             pdf.line(100, 76 + pos, 100, 68 + pos)
             #Agregar otros factores
             otros = ""
-            otros += " (75% "+"|".join(correcta_examen_75)+")" if correcta_examen_75 != [] else ""
-            otros += " (50% "+"|".join(correcta_examen_50)+")" if correcta_examen_50 != [] else ""
-            otros += " (25% "+ "|".join(correcta_examen_25)+")" if correcta_examen_25 != [] else ""
             factor = len(otros)+3 if len(otros)>0 else 0
             pdf.text(105 + 20 - factor, 74 + pos, "|".join(correcta_examen)+otros)
             pdf.line(155, 76 + pos, 155, 68 + pos)
-            if marcada_examen in correcta_examen or "ANULADA" in correcta_examen:
+            numero_correctas = 0
+            total_correctas = len(correcta_examen)
+            
+            for marcada in marcada_examen.split("|"):
+                if marcada in correcta_examen:
+                    numero_correctas+=1/total_correctas
+
+            if "ANULADA" in correcta_examen:
+                numero_correctas = 1
+
+            if numero_correctas >= 0.5 or "ANULADA" in correcta_examen:
                 pdf.set_text_color(0, 0, 255)
-                pdf.text(160 + 15, 74 + pos, "SI")
-                estadisticas.append(1)
-            elif marcada_examen in correcta_examen_75:
-                pdf.set_text_color(0, 255, 0)
-                pdf.text(160 + 15, 74 + pos, "75%")
-                estadisticas.append(0.75)
-            elif marcada_examen in correcta_examen_50:
-                pdf.set_text_color(0, 255, 0)
-                pdf.text(160 + 15, 74 + pos, "50%")
-                estadisticas.append(0.5)
-            elif marcada_examen in correcta_examen_25:
-                pdf.set_text_color(0, 255, 0)
-                pdf.text(160 + 15, 74 + pos, "25%")
-                estadisticas.append(0.25)
+                pdf.text(160 + 15, 74 + pos, str(numero_correctas*100)+"%")
+                estadisticas.append(numero_correctas)
             else:
                 pdf.set_text_color(255, 0, 0)
-                pdf.text(160 + 15, 74 + pos, "NO")
+                pdf.text(160 + 15, 74 + pos, str(numero_correctas*100)+"%")
                 estadisticas.append(0)
             pdf.set_text_color(0, 0, 0)
             pdf.line(5, 76 + pos, 200, 76 + pos)
