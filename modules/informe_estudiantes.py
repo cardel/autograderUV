@@ -78,7 +78,7 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
 
         estadisticas = np.array(estadisticas)
         val_res_aprendizaje = []
-        for pre in preg_res_aprendizaje:
+        for pre in preg_res_aprendizaje[int(tipo_examen)]:
             val_res_aprendizaje.append(np.average(estadisticas[pre]))
         num_correctas_marcadas = np.sum(estadisticas)
         pdf.text(10, 80 + pos, "Número de correctas: " + str(num_correctas_marcadas))

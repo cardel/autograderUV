@@ -89,8 +89,12 @@ def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha,
             for resp in respuestas_marcadas:
                 if resp in respuestas_correctas:
                     correctas += 1.0/factor
+                else:
+                    correctas -= 1.0/(5-factor)
+       
+        if correctas < 0:
+            correctas = 0
 
         dataPreguntas.append([correctas, round(correctas*5.0/num_correctas+0.001,1) if (correctas/num_correctas <= 1) else 5.0])
-    print(dataPreguntas)
     data[["correctas", "nota"]] = dataPreguntas
     return data, respuestas_totales, datos_examen, estudiantes_tipo_examen, estudiantes
