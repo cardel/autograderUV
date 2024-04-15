@@ -4,12 +4,11 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
     #Informe por estudiante
     for cod,tipo_examen in zip(data["codigo"].values, data["examen"].values):
         respuestas = respuestas_totales[int(tipo_examen)]
-        nombrearchivo = data[data["codigo"]==cod]["Nombre de archivo"].values[0]
-        nombre = data[data["codigo"]==cod]["nombre"].values[0]
+        nombrearchivo = data[data["codigo"]==cod]["File name"].values[0]
+        nombre = data[data["codigo"] == cod]["nombre"].values[0]
         codigo = data[data["codigo"] == cod]["codigo"].values[0]
 
         nombre_examen = codificacion_examenes[int(tipo_examen)]
-
         pdf = PDF(format='legal')
         pdf.set_author('Carlos Delgado carlos.andres.delgado@correounivalle.edu.co')
         pdf.set_title("Informe de calificaciones")
@@ -58,18 +57,22 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
             for marcada in marcada_examen.split("|"):
                 if marcada in correcta_examen:
                     numero_correctas+=1/total_correctas
+                else:
+                    numero_correctas-=1/(5-total_correctas)
 
             if "ANULADA" in correcta_examen:
                 numero_correctas = 1
 
+            if numero_correctas < 0:
+                numero_correctas = 0
+
             if numero_correctas >= 0.5 or "ANULADA" in correcta_examen:
                 pdf.set_text_color(0, 0, 255)
-                pdf.text(160 + 15, 74 + pos, str(numero_correctas*100)+"%")
-                estadisticas.append(numero_correctas)
+                pdf.text(160 + 15, 74 + pos, str(round(numero_correctas*100,2))+"%")
             else:
                 pdf.set_text_color(255, 0, 0)
-                pdf.text(160 + 15, 74 + pos, str(numero_correctas*100)+"%")
-                estadisticas.append(0)
+                pdf.text(160 + 15, 74 + pos, str(round(numero_correctas*100,2))+"%")
+            estadisticas.append(numero_correctas)
             pdf.set_text_color(0, 0, 0)
             pdf.line(5, 76 + pos, 200, 76 + pos)
             pdf.line(200, 76 + pos, 200, 68 + pos)
@@ -81,7 +84,7 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
         for pre in preg_res_aprendizaje[int(tipo_examen)]:
             val_res_aprendizaje.append(np.average(estadisticas[pre]))
         num_correctas_marcadas = np.sum(estadisticas)
-        pdf.text(10, 80 + pos, "Número de correctas: " + str(num_correctas_marcadas))
+        pdf.text(10, 80 + pos, "Número de correctas: " + str(round(num_correctas_marcadas,2)))
         pdf.text(10, 90 + pos, "Preguntas correctas para 5.0: " + str(num_correctas))
         pdf.set_font("Times", "B", 22)
         pos+=10
@@ -91,8 +94,10 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
         movx = 57 #Espacio para reporte
         movy = 10
         pdf.set_font("Times", "", 16)
-        for label, value in zip(res_aprendizaje, val_res_aprendizaje):
+        for label, value, preg in zip(res_aprendizaje, val_res_aprendizaje, preg_res_aprendizaje[int(tipo_examen)]):
             pdf.text(10 + x, 110 + pos + y, label + ": " + str(round(value*5,1)) )
+            y += movy
+            pdf.text(10 + x, 110 + pos + y, "Preguntas asociadas: " + str(np.array(preg)+1))
             y += movy
         pos+=y
         pdf.set_font("Times", "B", 22)

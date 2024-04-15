@@ -20,16 +20,16 @@
         <group name="tipo">
             <question multiple="true" question="Pregunta023" rejectMultiple="false" type="QUESTIONS_BY_ROWS">
                 <values>
-                    <value response="A">
+                    <value response="0">
                         <point x="1787.0" y="536.0"/>
                     </value>
-                    <value response="B">
+                    <value response="1">
                         <point x="1887.0" y="537.0"/>
                     </value>
-                    <value response="C">
+                    <value response="2">
                         <point x="1987.0" y="537.0"/>
                     </value>
-                    <value response="D">
+                    <value response="3">
                         <point x="2087.0" y="537.0"/>
                     </value>
                 </values>

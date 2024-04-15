@@ -1,32 +1,8 @@
 import pandas as pd
 import numpy as np
 
-
 def crear_codigo(value):
-    value = value.replace(" ", "")
-    if value == "A":
-        return "0"
-    elif value == "B":
-        return "1"
-    elif value == "C":
-        return "2"
-    elif value == "D":
-        return "3"
-    elif value == "E":
-        return "4"
-    elif value == "F":
-        return "5"
-    elif value == "G":
-        return "6"
-    elif value == "H":
-        return "7"
-    elif value == "I":
-        return "8"
-    elif value == "J":
-        return "9"
-    else:
-        return -1
-
+    return str(value)
 
 def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha, examen):
     data = pd.read_csv("data/resultados.csv")
@@ -84,17 +60,17 @@ def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha,
                 correctas+=1
                 continue
             respuestas_correctas =  respuestas[pregunta].values[0].split("|")
-            factor = len(respuestas_correctas)
+            total_correctas = len(respuestas_correctas)
             respuestas_marcadas = data[data["codigo"] == cod][pregunta].values[0].split("|")
+            valor_pregunta = 0
             for resp in respuestas_marcadas:
                 if resp in respuestas_correctas:
-                    correctas += 1.0/factor
+                    valor_pregunta += 1.0/total_correctas
                 else:
-                    correctas -= 1.0/(5-factor)
-       
-        if correctas < 0:
-            correctas = 0
-
-        dataPreguntas.append([correctas, round(correctas*5.0/num_correctas+0.001,1) if (correctas/num_correctas <= 1) else 5.0])
+                    valor_pregunta -= 1.0/(5.0 - total_correctas)
+            if valor_pregunta < 0:
+                valor_pregunta = 0
+            correctas += valor_pregunta
+        dataPreguntas.append([correctas, round(correctas*5.0/num_correctas,1) if (correctas/num_correctas <= 1) else 5.0])
     data[["correctas", "nota"]] = dataPreguntas
     return data, respuestas_totales, datos_examen, estudiantes_tipo_examen, estudiantes
