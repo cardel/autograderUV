@@ -14,7 +14,7 @@ class PDF(FPDF):
     pass  # nothing happens when it is executed.
 
 
-num_correctas = 15
+num_correctas = 14.5
 fecha = '20 de Marzo de 2023'
 materia = "Introducción análisis numérico"
 examen = "Parcial 1"
