@@ -19,7 +19,7 @@ hpscan006,A,A,C,C,C|D,E,D,C,E,A|B,C|D,A|B,B|C,B,A,2,2,5,9,5,7,9,1
 hpscan028,D,D,C,C,A|B|C|D,E,B,C,B,E,B|C|D|E,A|B|C,C|D,B,A|D,2,3,8,0,6,9,7,2
 hpscan003,D,D,C,E,C|D,E,B,A,B,D,A,A|B,D,B,A|E,2,2,5,9,6,7,1,2
 hpscan025,C,D,C,C,C,E,E,C,B,E,A|D|E,B,B|C,D,A|E,2,2,5,9,3,8,5,2
-hpscan004,B|D,A|D|E,No marcada,B,C,B,A|D,B,A,B,A|B|E,C,B|C,D,B,2,2,5,9,4,7,0,0
+hpscan004,B|D,A|D|E,No marcada,B,C,B,A|D,B,A,B,A|B|E,C,B|C,D,C,2,2,5,9,4,7,0,0
 hpscan026,A,A,C,B,A|D,D,E,C,B,B|D|E,A|B|D,B|D,A|E,B,C,2,2,5,9,4,1,6,1
 hpscan001,D,B,C,A,A|D,B|C|D,B,C,B,D|E,C|D|E,A|B,A|E,B,C,2,1,6,0,3,5,7,1
 hpscan023,C,B,C,B,A|C,E,B,C,D,A,A|C|D,A|B|C,C|D,A,A|B|E,2,1,6,0,2,9,5,2
