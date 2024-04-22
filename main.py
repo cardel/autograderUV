@@ -18,9 +18,9 @@ num_correctas = 15
 fecha = '11 de abril de 2024'
 materia = "Fundamentos de lenguajes de programación"
 examen = "Parcial 1"
-resultados_aprendizaje = ('RA1: Conceptos Redes Neuronales', 'RA2: Solución sistemas Redes')
+resultados_aprendizaje = ('RA1: Uso de gramáticas para analizadores léxicos y sintácticos', 'RA2: Aplicar técnicas para representación de programas', 'RA3: Comprende compilación e interpretación')
 preg_res_aprendizaje = [
-        [[0,2,4,6,7,12],[1,3,5,8,9,10,11,13,14]],
+        [[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14]],
         [[11,2,7,10,6,4],[0,1,3,5,8,9,10,12,13,14]],
         [[11,7,2,4,3,12], [0,1,5,6,8,9,10,13,14]],
         [[0],[0]],

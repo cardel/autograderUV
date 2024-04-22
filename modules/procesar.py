@@ -45,7 +45,7 @@ def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha,
     datos_examen = {"nombre": materia, "fecha": fecha, "examen": examen}
     
     respuestas_totales = []
-
+    data.fillna("No marcada", inplace=True)
     for i in range(num_examenes):
         respuestas_totales.append(pd.read_csv("data/respuestas"+codificacion_examenes[i]+".csv"))
     

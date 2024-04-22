@@ -4,7 +4,7 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
     #Informe por estudiante
     for cod,tipo_examen in zip(data["codigo"].values, data["examen"].values):
         respuestas = respuestas_totales[int(tipo_examen)]
-        nombrearchivo = data[data["codigo"]==cod]["File name"].values[0]
+        nombrearchivo = data[data["codigo"]==cod]["Nombre de archivo"].values[0]
         nombre = data[data["codigo"] == cod]["nombre"].values[0]
         codigo = data[data["codigo"] == cod]["codigo"].values[0]
 

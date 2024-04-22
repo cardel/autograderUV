@@ -107,8 +107,9 @@ def generarInformeGrupal(data, respuestas_totales, datos_examen, res_aprendizaje
         pdf.set_font("Times", "B", 16)
         pdf.text(10, 165 + y, label)
         pdf.set_font("Times", "", 14)
-        pdf.text(100, 165 + y, " Promedio: " + str(round(value * 5, 2)))
-        pdf.text(150, 165 + y, "Dev estándar: " + str(round(dstd * 5, 2)))
+        y += movy
+        pdf.text(10, 165 + y, " Promedio: " + str(round(value * 5, 2)))
+        pdf.text(70, 165 + y, "Dev estándar: " + str(round(dstd * 5, 2)))
         y += movy
 
 

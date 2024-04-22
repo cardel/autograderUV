@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<template density="40" threshold="127" version="2.1">
+<template density="55" threshold="115" version="2.1">
     <crop bottom="0" left="0" right="0" top="0"/>
     <rotation angle="-9.18273387442283E-4"/>
     <corners type="ROUND">
-        <corner position="TOP_RIGHT">
-            <point x="2351.0" y="259.0"/>
-        </corner>
-        <corner position="TOP_LEFT">
-            <point x="173.0" y="257.0"/>
-        </corner>
         <corner position="BOTTOM_LEFT">
             <point x="178.0" y="3069.0"/>
         </corner>
         <corner position="BOTTOM_RIGHT">
             <point x="2355.0" y="3073.0"/>
         </corner>
+        <corner position="TOP_LEFT">
+            <point x="173.0" y="257.0"/>
+        </corner>
+        <corner position="TOP_RIGHT">
+            <point x="2351.0" y="259.0"/>
+        </corner>
     </corners>
-    <fields groups="true" shape="CIRCLE" size="20">
+    <fields groups="true" shape="CIRCLE" size="12">
         <group name="tipo">
             <question multiple="true" question="Pregunta023" rejectMultiple="false" type="QUESTIONS_BY_ROWS">
                 <values>
