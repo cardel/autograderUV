@@ -63,11 +63,20 @@ def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha,
             total_correctas = len(respuestas_correctas)
             respuestas_marcadas = data[data["codigo"] == cod][pregunta].values[0].split("|")
             valor_pregunta = 0
-            for resp in respuestas_marcadas:
-                if resp in respuestas_correctas:
-                    valor_pregunta += 1.0/total_correctas
+            #Caso de respuesta única
+            if len(respuestas_correctas) == 1:
+                if respuestas_correctas[0] in respuestas_marcadas:
+                    valor_pregunta = 1
                 else:
-                    valor_pregunta -= 1.0/(5.0 - total_correctas)
+                    valor_pregunta = 0
+                    continue
+            else:
+                #Caso respuesta múltiple
+                for resp in respuestas_marcadas:
+                    if resp in respuestas_correctas:
+                        valor_pregunta += 1.0/total_correctas
+                    else:
+                        valor_pregunta -= 1.0/(5.0 - total_correctas)
             if valor_pregunta < 0:
                 valor_pregunta = 0
             correctas += valor_pregunta

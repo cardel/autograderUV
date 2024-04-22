@@ -14,9 +14,9 @@ class PDF(FPDF):
     pass  # nothing happens when it is executed.
 
 
-num_correctas = 14.5
-fecha = '20 de Marzo de 2023'
-materia = "Introducción análisis numérico"
+num_correctas = 15
+fecha = '11 de abril de 2024'
+materia = "Fundamentos de lenguajes de programación"
 examen = "Parcial 1"
 resultados_aprendizaje = ('RA1: Conceptos Redes Neuronales', 'RA2: Solución sistemas Redes')
 preg_res_aprendizaje = [
@@ -25,7 +25,7 @@ preg_res_aprendizaje = [
         [[11,7,2,4,3,12], [0,1,5,6,8,9,10,13,14]],
         [[0],[0]],
     ]
-num_examenes = 3
+num_examenes = 1
 codificacion_examenes = ["A", "B", "C", "D"]
 
 def todo(data, respuestas_totales, datos_examen,resultados_aprendizaje, preg_res_aprendizaje,estudiantes,estudiantes_tipo_examen): 
