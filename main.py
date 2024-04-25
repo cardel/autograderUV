@@ -40,6 +40,7 @@ if __name__ == '__main__':
     print("2. Solo informe del docente")
     print("3. Solo informes para estudiantes")
     print("4. Solo informe grupal")
+    print("5. Buscar estudiante")
     option = int(input("Ingrese la opción: "))
     
 	
@@ -51,6 +52,9 @@ if __name__ == '__main__':
         generarInformeEstudiantes(data, respuestas_totales, resultados_aprendizaje, preg_res_aprendizaje, codificacion_examenes, num_correctas, PDF)
     elif option == 4:
         generarInformeGrupal(data, respuestas_totales, datos_examen, resultados_aprendizaje, preg_res_aprendizaje,estudiantes_tipo_examen, num_examenes, codificacion_examenes, PDF)
+    elif option == 5:
+        codigo_estudiante = input("Ingrese el código del estudiante: ")
+        print(data[data["codigo"]==codigo_estudiante]["Nombre de archivo"])
     else:
         print("Opcion no válida")
     
