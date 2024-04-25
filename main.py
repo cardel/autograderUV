@@ -14,7 +14,7 @@ class PDF(FPDF):
     pass  # nothing happens when it is executed.
 
 
-num_correctas = 15
+num_correctas = 14.5
 fecha = '11 de abril de 2024'
 materia = "Fundamentos de lenguajes de programación"
 examen = "Parcial 1"
