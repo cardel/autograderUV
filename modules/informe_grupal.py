@@ -2,24 +2,7 @@ import scipy
 import matplotlib.pyplot as plt
 import numpy as np
 
-def generarReportes(numero_examenes, promedio_preg,preg_res_aprendizaje, pre):
-    total_promedio_aprendizaje = []
-    total_dev_std_aprendizaje = []
-    for num_examen in range(0, numero_examenes):
-        val_res_aprendizaje = []
-        for pre in preg_res_aprendizaje[num_examen]:
-            val_res_aprendizaje.append(np.mean(promedio_preg[num_examen,pre]))
-
-        dev_std_aprendizaje = []
-        for pre in preg_res_aprendizaje[num_examen]:
-            dev_std_aprendizaje.append(np.std(promedio_preg[num_examen,pre]))
-        
-        total_promedio_aprendizaje.append(val_res_aprendizaje)
-        total_dev_std_aprendizaje.append(dev_std_aprendizaje)
-
-    return total_promedio_aprendizaje, total_dev_std_aprendizaje
-
-def generarInformeGrupal(data, respuestas_totales, datos_examen, res_aprendizaje, preg_res_aprendizaje,estudiantes_tipo_examen, num_examenes, codificacion_examenes, PDF):
+def generarInformeGrupal(data, respuestas_totales, datos_examen, res_aprendizaje, preg_res_aprendizaje,estudiantes_tipo_examen, codificacion_examenes, consolidado, codificacion_preguntas, PDF):
     plt.figure(dpi=150)
 
     final_mean = data["nota"].mean()
@@ -43,40 +26,31 @@ def generarInformeGrupal(data, respuestas_totales, datos_examen, res_aprendizaje
 
     total_grupo = data["codigo"].values.shape[0]
     preguntas = np.zeros((total_grupo, respuestas_totales[0].shape[1]))
-    preguntas_por_examen = []
-    
-    for i in range(num_examenes):
-        preguntas_por_examen.append([])
 
-    num_preguntas_examen = respuestas_totales[0].shape[1]
     count = 0
-    promedio_preg = np.zeros((num_examenes,respuestas_totales[0].shape[1]))
+    promedio_preg = np.zeros(respuestas_totales[0].shape[1])
+    examen = dict()
     for cod,tipo_examen in zip(data["codigo"].values,data["examen"].values):
-        num_preg = 0
-        respuestas = respuestas_totales[int(tipo_examen)]
         examen_por_estudiante = []
-        for preg in respuestas.columns.sort_values():
-            marcada_examen = data[data["codigo"] == cod][preg].values[0]
-            correcta_examen = respuestas[preg].values[0]
-            
+
+        respuestas_correctas = consolidado[cod][0]
+        respuestas_marcadas = consolidado[cod][1]
+        num_preg = 0
+        for marcada_examen, correcta_examen in zip(respuestas_marcadas, respuestas_correctas):
             if marcada_examen in correcta_examen:
-                preguntas[count, num_preg] = 1
-                promedio_preg[int(tipo_examen),num_preg] += 1/estudiantes_tipo_examen[int(tipo_examen)]
+                promedio_preg[num_preg] += 1/total_grupo
                 examen_por_estudiante.append(1)
             else:
                 examen_por_estudiante.append(0)    
             num_preg+=1
-        preguntas_por_examen[int(tipo_examen)].append(examen_por_estudiante)    
         count+=1
+        examen[cod] = (int(tipo_examen), examen_por_estudiante)
 
-    std_preg = np.zeros((int(num_examenes),num_preguntas_examen))
-    for i in range(num_examenes):
-        std_preg[i,:] = np.std(np.array(preguntas_por_examen[i]), axis = 0)
+    print(examen)
+    exit(0)
 
-    porcentaje_preg = np.zeros((int(num_examenes),num_preguntas_examen))
-    for i in range(num_examenes):
-        examen = np.array(preguntas_por_examen[i])
-        porcentaje_preg[i,:] = np.sum(examen, axis=0)/np.sum(examen.shape[0])
+    std_preg = np.std(np.array(preguntas), axis = 0)
+    porcentaje_preg = np.sum(examen, axis=0)/np.sum(examen.shape[0])
     
     pdf.add_page()
     pdf.set_font("Times", "B", 22)
@@ -93,7 +67,6 @@ def generarInformeGrupal(data, respuestas_totales, datos_examen, res_aprendizaje
     pdf.text(125, 86, "Deviación estandar: " + str(round(final_std, 2)))
     pdf.text(125, 92, "Nota del 66.3% del grupo: " + "[" + str(round(final_mean-final_std, 2)) +" , " + str(round(final_mean+final_std, 2)) +"]")
 
-    total_promedio_aprendizaje, total_dev_std_aprendizaje = generarReportes(num_examenes, promedio_preg, preg_res_aprendizaje, res_aprendizaje)
 
     pdf.set_font("Times", "B", 16)
     pdf.text(45, 150, "Resultados de aprendizaje del examen " )
@@ -113,53 +86,52 @@ def generarInformeGrupal(data, respuestas_totales, datos_examen, res_aprendizaje
         y += movy
 
 
-    for num_examen in range(0, num_examenes):
-        pdf.add_page()
-        respuestas = respuestas_totales[int(num_examen)]
-        count = 1
-        pos = -10
-        pdf.set_font("Times", "B", 18)
-        pdf.text(65, 48 + pos, "Informe de respuestas, exámen "+ codificacion_examenes[int(num_examen)])
-        pdf.set_font("Times", "I", 14)
-        pdf.text(5, 56 + pos, "Escala numérica entre 0.0 y 5.0")
-        pdf.set_font("Times", "", 16)
-        pdf.line(5, 70 + pos, 5, 62 + pos)
-        pdf.line(5, 62 + pos, 200, 62 + pos)
-        pdf.text(7, 68 + pos, "Pregunta")
-        pdf.line(40, 70 + pos, 40, 62 + pos)
-        pdf.text(45, 68 + pos, "Promedio")
-        pdf.line(100, 70 + pos, 100, 62 + pos)
-        pdf.text(105, 68 + pos, "desv stand")
-        pdf.line(155, 70 + pos, 155, 62 + pos)
-        pdf.text(160, 68 + pos, "% correcta")
-        pdf.line(5, 70 + pos, 200, 70 + pos)
-        pdf.line(200, 70 + pos, 200, 62 + pos)
-        idx_preg = 0
-        for preg in respuestas.columns.sort_values():
-            if respuestas[preg].values[0] != "ANULADA":
-                pdf.line(5, 76 + pos, 5, 68 + pos)
-                pdf.text(7 + 12, 74 + pos, str(count))
-                pdf.line(40, 76 + pos, 40, 68 + pos)
-                pdf.text(45 + 20, 74 + pos, str(round(5*promedio_preg[int(num_examen),idx_preg],2)))
-                pdf.line(100, 76 + pos, 100, 68 + pos)
-                pdf.text(105 + 20, 74 + pos, str(round(5*std_preg[int(num_examen),idx_preg],2)))
-                pdf.line(155, 76 + pos, 155, 68 + pos)
+    pdf.add_page()
+    respuestas = respuestas_totales[int(num_examen)]
+    count = 1
+    pos = -10
+    pdf.set_font("Times", "B", 18)
+    pdf.text(65, 48 + pos, "Informe de respuestas, exámen "+ codificacion_examenes[int(num_examen)])
+    pdf.set_font("Times", "I", 14)
+    pdf.text(5, 56 + pos, "Escala numérica entre 0.0 y 5.0")
+    pdf.set_font("Times", "", 16)
+    pdf.line(5, 70 + pos, 5, 62 + pos)
+    pdf.line(5, 62 + pos, 200, 62 + pos)
+    pdf.text(7, 68 + pos, "Pregunta")
+    pdf.line(40, 70 + pos, 40, 62 + pos)
+    pdf.text(45, 68 + pos, "Promedio")
+    pdf.line(100, 70 + pos, 100, 62 + pos)
+    pdf.text(105, 68 + pos, "desv stand")
+    pdf.line(155, 70 + pos, 155, 62 + pos)
+    pdf.text(160, 68 + pos, "% correcta")
+    pdf.line(5, 70 + pos, 200, 70 + pos)
+    pdf.line(200, 70 + pos, 200, 62 + pos)
+    idx_preg = 0
+    for preg in respuestas.columns.sort_values():
+        if respuestas[preg].values[0] != "ANULADA":
+            pdf.line(5, 76 + pos, 5, 68 + pos)
+            pdf.text(7 + 12, 74 + pos, str(count))
+            pdf.line(40, 76 + pos, 40, 68 + pos)
+            pdf.text(45 + 20, 74 + pos, str(round(5*promedio_preg[int(num_examen),idx_preg],2)))
+            pdf.line(100, 76 + pos, 100, 68 + pos)
+            pdf.text(105 + 20, 74 + pos, str(round(5*std_preg[int(num_examen),idx_preg],2)))
+            pdf.line(155, 76 + pos, 155, 68 + pos)
 
-                correcta = porcentaje_preg[int(num_examen),idx_preg]
-                
+            correcta = porcentaje_preg[int(num_examen),idx_preg]
+            
 
-                pdf.line(5, 76 + pos, 200, 76 + pos)
-                pdf.line(200, 76 + pos, 200, 68 + pos)
-                if correcta >= 0.6:
-                    pdf.set_text_color(0, 0, 255)
-                else:
-                    pdf.set_text_color(255, 0, 0)
-                pdf.text(160 + 15, 74 + pos, str(round(100*correcta,2)) + "%")
-                pdf.set_text_color(0, 0, 0)
-                pos += 6
-            idx_preg+=1
-            count+=1
-        
+            pdf.line(5, 76 + pos, 200, 76 + pos)
+            pdf.line(200, 76 + pos, 200, 68 + pos)
+            if correcta >= 0.6:
+                pdf.set_text_color(0, 0, 255)
+            else:
+                pdf.set_text_color(255, 0, 0)
+            pdf.text(160 + 15, 74 + pos, str(round(100*correcta,2)) + "%")
+            pdf.set_text_color(0, 0, 0)
+            pos += 6
+        idx_preg+=1
+        count+=1
+    
         val_res_aprendizaje = total_promedio_aprendizaje[num_examen]
         dev_std_aprendizaje = total_dev_std_aprendizaje[num_examen]
         y = pos + 70

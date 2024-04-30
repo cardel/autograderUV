@@ -1,6 +1,6 @@
 import numpy as np
 
-def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_res_aprendizaje, codificacion_examenes, num_correctas, PDF):
+def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_res_aprendizaje, codificacion_examenes, num_correctas, consolidado, PDF):
     #Informe por estudiante
     for cod,tipo_examen in zip(data["codigo"].values, data["examen"].values):
         respuestas = respuestas_totales[int(tipo_examen)]
@@ -38,13 +38,15 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
         pos = 6
         count = 1
         estadisticas = []
-        for preg in respuestas.columns.sort_values():
-            marcada_examen = data[data["codigo"] == cod][preg].values[0]
-            correcta_examen = respuestas[preg].values[0].split("|")
+        respuestas_correctas = consolidado[cod][0]
+        marcadas = consolidado[cod][1]
+        
+        for correcta_examen, marcada_examen in zip(respuestas_correctas, marcadas):
+            correcta_examen = correcta_examen.split("|")
             pdf.line(5, 76 +pos, 5, 68 +pos)
             pdf.text(7 + 12, 74 + pos, str(count))
             pdf.line(40, 76 + pos, 40, 68 + pos)
-            pdf.text(45 + 20, 74 + pos, marcada_examen)
+            pdf.text(45 + 20, 74 + pos, str(marcada_examen))
             pdf.line(100, 76 + pos, 100, 68 + pos)
             #Agregar otros factores
             otros = ""

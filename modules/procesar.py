@@ -4,7 +4,7 @@ import numpy as np
 def crear_codigo(value):
     return str(value)
 
-def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha, examen):
+def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha, examen, codificacion_preguntas):
     data = pd.read_csv("data/resultados.csv")
     tipo_parcial = data["tipo.Pregunta023"].apply(crear_codigo)
     data.drop(columns=["tipo.Pregunta023"], inplace=True)
@@ -44,24 +44,29 @@ def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha,
     data[["nombre","correo","numeroID"]] = dataEstudiante
     datos_examen = {"nombre": materia, "fecha": fecha, "examen": examen}
     
-    respuestas_totales = []
     data.fillna("No marcada", inplace=True)
-    for i in range(num_examenes):
-        respuestas_totales.append(pd.read_csv("data/respuestas"+codificacion_examenes[i]+".csv"))
     
+    #Lemos las 20 preguntas
+    respuestas = pd.read_csv("data/respuestas.csv") 
+    respuestas_totales = []
+    for codif in codificacion_preguntas:
+        respuestas_totales.append(respuestas.iloc[:,codif])
+
     estudiantes_tipo_examen = np.zeros((num_examenes))
     dataPreguntas = []
+    consolidado = dict()
     for cod,tipo_examen in zip(data["codigo"].values, data["examen"].values):
         correctas = 0.0
-        respuestas = respuestas_totales[int(tipo_examen)]
-        estudiantes_tipo_examen[int(tipo_examen)] += 1
-        for pregunta in respuestas.columns:
-            if "ANULADA" in respuestas[pregunta]:
-                correctas+=1
+        respuestas = respuestas_totales[int(tipo_examen)].values[0]
+        marcadas = data[data["codigo"] == cod].values[0,1:16]
+        consolidado[cod] = [respuestas, marcadas]
+        for resp,marc in zip(respuestas,marcadas):
+            if resp == "ANULADA":
+                correctas += 1
                 continue
-            respuestas_correctas =  respuestas[pregunta].values[0].split("|")
+            respuestas_correctas =  resp.split("|")
             total_correctas = len(respuestas_correctas)
-            respuestas_marcadas = data[data["codigo"] == cod][pregunta].values[0].split("|")
+            respuestas_marcadas = marc.split("|")
             valor_pregunta = 0
             #Caso de respuesta única
             if len(respuestas_correctas) == 1:
@@ -82,4 +87,4 @@ def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha,
             correctas += valor_pregunta
         dataPreguntas.append([correctas, round(correctas*5.0/num_correctas,1) if (correctas/num_correctas <= 1) else 5.0])
     data[["correctas", "nota"]] = dataPreguntas
-    return data, respuestas_totales, datos_examen, estudiantes_tipo_examen, estudiantes
+    return data, respuestas_totales, datos_examen, estudiantes_tipo_examen, estudiantes, consolidado
