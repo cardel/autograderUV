@@ -47,10 +47,10 @@ def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha,
     data.fillna("No marcada", inplace=True)
     
     #Lemos las 20 preguntas
-    respuestas = pd.read_csv("data/respuestas.csv") 
+    respuestas_csv = pd.read_csv("data/respuestas.csv") 
     respuestas_totales = []
     for codif in codificacion_preguntas:
-        respuestas_totales.append(respuestas.iloc[:,codif])
+        respuestas_totales.append(respuestas_csv.iloc[:,codif])
 
     estudiantes_tipo_examen = np.zeros((num_examenes))
     dataPreguntas = []
@@ -87,4 +87,4 @@ def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha,
             correctas += valor_pregunta
         dataPreguntas.append([correctas, round(correctas*5.0/num_correctas,1) if (correctas/num_correctas <= 1) else 5.0])
     data[["correctas", "nota"]] = dataPreguntas
-    return data, respuestas_totales, datos_examen, estudiantes_tipo_examen, estudiantes, consolidado
+    return data, respuestas_csv, respuestas_totales, datos_examen, estudiantes_tipo_examen, estudiantes, consolidado

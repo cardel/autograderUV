@@ -20,9 +20,9 @@ examen = "Parcial 1"
 resultados_aprendizaje = ('RA1: Uso de gramáticas para analizadores léxicos y sintácticos', 'RA2: Aplicar técnicas para representación de programas', 'RA3: Comprende compilación e interpretación')
 preg_res_aprendizaje = [
         [[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14]],
-        [[11,2,7,10,6,4],[0,1,3,5,8,9,10,12,13,14]],
-        [[11,7,2,4,3,12], [0,1,5,6,8,9,10,13,14]],
-        [[0],[0]],
+        [[11,2,7,10,6,4],[0,1,3],[0,1,3,5,8,9,10,12,13,14]],
+        [[11,7,2,4,3,12],[0,1,3],[0,1,5,6,8,9,10,13,14]],
+        [[0],[0],[1]],
     ]
 
 codificacion_preguntas = [
@@ -36,13 +36,13 @@ codificacion_preguntas = [
 num_examenes = 1
 codificacion_examenes = ["A", "B", "C", "D", "E", "F", "G", "H"]
 
-def todo(data, respuestas_totales, datos_examen,resultados_aprendizaje, preg_res_aprendizaje,estudiantes,estudiantes_tipo_examen): 
+def todo(data, respuestas, respuestas_totales, datos_examen,resultados_aprendizaje, preg_res_aprendizaje,estudiantes,estudiantes_tipo_examen): 
     generarInformeDocente(data, estudiantes)
     generarInformeEstudiantes(data, respuestas_totales, resultados_aprendizaje, preg_res_aprendizaje, codificacion_examenes, num_correctas, consolidado, PDF)
-    generarInformeGrupal(data, respuestas_totales, datos_examen, resultados_aprendizaje, preg_res_aprendizaje,estudiantes_tipo_examen, codificacion_examenes, consolidado, codificacion_preguntas, PDF)
+    generarInformeGrupal(data, respuestas, respuestas_totales, datos_examen, resultados_aprendizaje, preg_res_aprendizaje,estudiantes_tipo_examen, codificacion_examenes, consolidado, codificacion_preguntas, PDF)
 
 if __name__ == '__main__':
-    data, respuestas_totales, datos_examen, estudiantes_tipo_examen, estudiantes, consolidado = procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha, examen, codificacion_preguntas)
+    data, respuestas, respuestas_totales, datos_examen, estudiantes_tipo_examen, estudiantes, consolidado = procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha, examen, codificacion_preguntas)
     print("Que desea")
     print("1. Generar todo")
     print("2. Solo informe del docente")
@@ -53,13 +53,13 @@ if __name__ == '__main__':
     
 	
     if option == 1:
-        todo(data, respuestas_totales, datos_examen,resultados_aprendizaje, preg_res_aprendizaje, estudiantes,estudiantes_tipo_examen)
+        todo(data, respuestas, respuestas_totales, datos_examen,resultados_aprendizaje, preg_res_aprendizaje, estudiantes,estudiantes_tipo_examen)
     elif option == 2:
         generarInformeDocente(data, estudiantes)
     elif option == 3:
         generarInformeEstudiantes(data, respuestas_totales, resultados_aprendizaje, preg_res_aprendizaje, codificacion_examenes, num_correctas, consolidado, PDF)
     elif option == 4:
-        generarInformeGrupal(data, respuestas_totales, datos_examen, resultados_aprendizaje, preg_res_aprendizaje,estudiantes_tipo_examen, codificacion_examenes, consolidado, codificacion_preguntas, PDF)
+        generarInformeGrupal(data, respuestas, respuestas_totales, datos_examen, resultados_aprendizaje, preg_res_aprendizaje,estudiantes_tipo_examen, codificacion_examenes, consolidado, codificacion_preguntas, PDF)
     elif option == 5:
         codigo_estudiante = input("Ingrese el código del estudiante: ")
         print(data[data["codigo"]==codigo_estudiante]["Nombre de archivo"])

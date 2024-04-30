@@ -2,7 +2,7 @@ import scipy
 import matplotlib.pyplot as plt
 import numpy as np
 
-def generarInformeGrupal(data, respuestas_totales, datos_examen, res_aprendizaje, preg_res_aprendizaje,estudiantes_tipo_examen, codificacion_examenes, consolidado, codificacion_preguntas, PDF):
+def generarInformeGrupal(data, respuestas, respuestas_totales, datos_examen, res_aprendizaje, preg_res_aprendizaje,estudiantes_tipo_examen, codificacion_examenes, consolidado, codificacion_preguntas, PDF):
     plt.figure(dpi=150)
 
     final_mean = data["nota"].mean()
@@ -30,6 +30,7 @@ def generarInformeGrupal(data, respuestas_totales, datos_examen, res_aprendizaje
     count = 0
     promedio_preg = np.zeros(respuestas_totales[0].shape[1])
     examen = dict()
+    resultados_estudiantes = []
     for cod,tipo_examen in zip(data["codigo"].values,data["examen"].values):
         examen_por_estudiante = []
 
@@ -44,14 +45,15 @@ def generarInformeGrupal(data, respuestas_totales, datos_examen, res_aprendizaje
                 examen_por_estudiante.append(0)    
             num_preg+=1
         count+=1
-        examen[cod] = (int(tipo_examen), examen_por_estudiante)
+        #Expandir a 20 preguntas
+        examen_general_estudiante = np.zeros(respuestas.shape[1])
+        examen_general_estudiante[codificacion_preguntas] = examen_por_estudiante
+        examen[cod] = (int(tipo_examen), examen_general_estudiante)
+        resultados_estudiantes.append(examen_general_estudiante)
 
-    print(examen)
-    exit(0)
-
-    std_preg = np.std(np.array(preguntas), axis = 0)
-    porcentaje_preg = np.sum(examen, axis=0)/np.sum(examen.shape[0])
-    
+    resultados_estudiantes = np.array(resultados_estudiantes)
+    std_preg = np.std(resultados_estudiantes, axis = 0)
+    porcentaje_preg = np.sum(resultados_estudiantes, axis=0)/total_grupo
     pdf.add_page()
     pdf.set_font("Times", "B", 22)
     pdf.text(65, 12, "Informe grupal parcial")
@@ -72,10 +74,23 @@ def generarInformeGrupal(data, respuestas_totales, datos_examen, res_aprendizaje
     pdf.text(45, 150, "Resultados de aprendizaje del examen " )
 
     movy = 10  # Espacio para reporte
-
-    promedio_grupal_aprendizaje = np.mean(total_promedio_aprendizaje, axis=0)
-    promedio_grupal_desviacion = np.mean(total_dev_std_aprendizaje, axis=0)
     y = 0
+    promedio_grupal_aprendizaje = np.zeros(len(res_aprendizaje))
+    promedio_grupal_desviacion = np.zeros(len(res_aprendizaje))
+    for i in range(0, len(res_aprendizaje)):
+        total_promedio = 0
+        total_std = 0
+        cnt_promedio = 0
+        cnt_std = 0
+        for preg_arp in preg_res_aprendizaje:
+            obj_preg = preg_arp[i]
+            total_promedio += np.sum(promedio_preg[obj_preg])
+            total_std += np.sum(std_preg[obj_preg])
+            cnt_promedio += len(promedio_preg[obj_preg])
+            cnt_std += len(std_preg[obj_preg])
+        promedio_grupal_aprendizaje[i] = total_promedio/cnt_promedio
+        promedio_grupal_desviacion[i] = total_std/cnt_std
+    
     for label, value, dstd in zip(res_aprendizaje, promedio_grupal_aprendizaje, promedio_grupal_desviacion):
         pdf.set_font("Times", "B", 16)
         pdf.text(10, 165 + y, label)
@@ -85,13 +100,22 @@ def generarInformeGrupal(data, respuestas_totales, datos_examen, res_aprendizaje
         pdf.text(70, 165 + y, "Dev estándar: " + str(round(dstd * 5, 2)))
         y += movy
 
-
+    y = 200
+    pdf.text(10, 35 + y, "Anotaciones:")
+    y += movy
+    pdf.text(10, 35 + y, "Los temas que tienen menor promedio y mayor desviación estándar son los de mayor dificultad")
+    y += movy
+    pdf.text(10, 35 + y, "Una promedio bajo indica que el grupo NO domina del tema")
+    y += movy
+    pdf.text(10, 35 + y, "Una deviación estándar elevada indica que el manejo del tema no es uniforme dentro del grupo")
+    y += movy
+    pdf.text(10, 35 + y, "Se debe hacer mayor enfasis en ellos en el éxamen opcional y en las sesiones de estudio")
+    
     pdf.add_page()
-    respuestas = respuestas_totales[int(num_examen)]
     count = 1
     pos = -10
     pdf.set_font("Times", "B", 18)
-    pdf.text(65, 48 + pos, "Informe de respuestas, exámen "+ codificacion_examenes[int(num_examen)])
+    pdf.text(65, 48 + pos, "Informe de respuestas")
     pdf.set_font("Times", "I", 14)
     pdf.text(5, 56 + pos, "Escala numérica entre 0.0 y 5.0")
     pdf.set_font("Times", "", 16)
@@ -107,17 +131,20 @@ def generarInformeGrupal(data, respuestas_totales, datos_examen, res_aprendizaje
     pdf.line(5, 70 + pos, 200, 70 + pos)
     pdf.line(200, 70 + pos, 200, 62 + pos)
     idx_preg = 0
-    for preg in respuestas.columns.sort_values():
-        if respuestas[preg].values[0] != "ANULADA":
+
+    preguntas_estudiantes_totales = resultados_estudiantes.T
+    cnt = 0
+    for preg in preguntas_estudiantes_totales:
+        if respuestas.iloc[0,cnt] != "ANULADA":
             pdf.line(5, 76 + pos, 5, 68 + pos)
             pdf.text(7 + 12, 74 + pos, str(count))
             pdf.line(40, 76 + pos, 40, 68 + pos)
-            pdf.text(45 + 20, 74 + pos, str(round(5*promedio_preg[int(num_examen),idx_preg],2)))
+            pdf.text(45 + 20, 74 + pos, str(round(5*preg.mean(),2)))
             pdf.line(100, 76 + pos, 100, 68 + pos)
-            pdf.text(105 + 20, 74 + pos, str(round(5*std_preg[int(num_examen),idx_preg],2)))
+            pdf.text(105 + 20, 74 + pos, str(round(5*preg.std(),2)))
             pdf.line(155, 76 + pos, 155, 68 + pos)
 
-            correcta = porcentaje_preg[int(num_examen),idx_preg]
+            correcta = preg.mean()
             
 
             pdf.line(5, 76 + pos, 200, 76 + pos)
@@ -132,31 +159,10 @@ def generarInformeGrupal(data, respuestas_totales, datos_examen, res_aprendizaje
         idx_preg+=1
         count+=1
     
-        val_res_aprendizaje = total_promedio_aprendizaje[num_examen]
-        dev_std_aprendizaje = total_dev_std_aprendizaje[num_examen]
-        y = pos + 70
-        pdf.set_font("Times", "B", 16)
-        pdf.text(45, 15+y, "Resultados de aprendizaje del examen " + codificacion_examenes[num_examen])
 
-        movy = 10  # Espacio para reporte
+        movy = 10  # Espacio para reporteid
+    cnt+=1
 
-        for label, value, dstd in zip(res_aprendizaje, val_res_aprendizaje, dev_std_aprendizaje):
-            pdf.set_font("Times", "B", 16)
-            pdf.text(10, 35 + y, label)
-            pdf.set_font("Times", "", 14)
-            pdf.text(100, 35 + y, " Promedio: " + str(round(value * 5, 2)))
-            pdf.text(150, 35 + y, "Dev estándar: " + str(round(dstd * 5, 2)))
-            y += movy
-
-        pdf.text(10, 35 + y, "Anotaciones:")
-        y += movy
-        pdf.text(10, 35 + y, "Los temas que tienen menor promedio y mayor desviación estándar son los de mayor dificultad")
-        y += movy
-        pdf.text(10, 35 + y, "Una promedio bajo indica que el grupo NO domina del tema")
-        y += movy
-        pdf.text(10, 35 + y, "Una deviación estándar elevada indica que el manejo del tema no es uniforme dentro del grupo")
-        y += movy
-        pdf.text(10, 35 + y, "Se debe hacer mayor enfasis en ellos en el éxamen opcional y en las sesiones de estudio")
     
     pdf.output("output/reporteGrupal.pdf", 'F')
 
