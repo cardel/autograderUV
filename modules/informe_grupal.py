@@ -41,20 +41,33 @@ def generarInformeGrupal(data, respuestas, respuestas_totales, datos_examen, res
         respuestas_correctas = consolidado[cod][0]
         respuestas_marcadas = consolidado[cod][1]
         num_preg = 0
-        respondida_estudiante = []
         for marcada_examen, correcta_examen in zip(respuestas_marcadas, respuestas_correctas):
-            if marcada_examen in correcta_examen:
-                promedio_preg[num_preg] += 1
-                examen_por_estudiante.append(1)
-                respondidas_preguntas[num_preg].append(1)
+            conteo_pregunta = 0 #Cuenta el porcentaje de la pregunta
+            marcada_examen_lst = marcada_examen.split("|")
+            correcta_examen_lst = correcta_examen.split("|")
+            
+            if len(correcta_examen_lst) == 1:
+                if marcada_examen_lst == correcta_examen_lst:
+                    conteo_pregunta = 1
+                else:
+                    conteo_pregunta = 0
             else:
-                examen_por_estudiante.append(0)
-                respondidas_preguntas[num_preg].append(0)
+                for marcada in marcada_examen_lst:
+                    if marcada in correcta_examen_lst:
+                        conteo_pregunta += 1/len(correcta_examen_lst)
+                    else:
+                        conteo_pregunta -= 1/(5 - len(correcta_examen_lst))
+            #Corregir respuestas negativas
+            if conteo_pregunta < 0:
+                conteo_pregunta = 0
+            promedio_preg[num_preg] += conteo_pregunta
+            examen_por_estudiante.append(conteo_pregunta)
+            respondidas_preguntas[num_preg].append(conteo_pregunta)
             num_preg+=1
         count+=1
         #Expandir a 20 preguntas
         examen_general_estudiante = np.zeros(respuestas.shape[1])
-        examen_general_estudiante[codificacion_preguntas] = examen_por_estudiante     
+        examen_general_estudiante[codificacion_preguntas] = examen_por_estudiante
         total_respondidas_examen[codificacion_preguntas] += 1
         examen[cod] = (int(tipo_examen), examen_general_estudiante)
         resultados_estudiantes.append(examen_general_estudiante)

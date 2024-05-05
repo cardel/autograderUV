@@ -1,8 +1,8 @@
 """
 Carlos Andres Delgado
 Script para calificar examenes
-Fecha: 2024-04-13
-Versión: 1.0
+Fecha: Mayo 05 2024
+Versión: 1.1
 """
 from fpdf import FPDF
 from modules.informe_docente import generarInformeDocente
