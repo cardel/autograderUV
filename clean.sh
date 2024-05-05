@@ -2,4 +2,7 @@
 
 rm -rf data/escaneado/*.png
 rm -rf data/procesado/*.png
-rm -rf output/*
+rm -rf output/reports/*.pdf
+rm -rf output/*.pdf
+rm -rf output/*.png
+rm -rf output/*.csv

@@ -14,31 +14,38 @@ class PDF(FPDF):
     pass  # nothing happens when it is executed.
 
 num_correctas = 13
-fecha = '11 de abril de 2024'
-materia = "Fundamentos de lenguajes de programación"
+fecha = '17 de abril de 2024'
+materia = "Fundamentos de Programación imperativa"
 examen = "Parcial 1"
-resultados_aprendizaje = ('RA1: Uso de gramáticas para analizadores léxicos y sintácticos', 'RA2: Aplicar técnicas para representación de programas', 'RA3: Comprende compilación e interpretación')
-preg_res_aprendizaje = [
-        [[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14]],
-        [[11,2,7,10,6,4],[0,1,3],[0,1,3,5,8,9,10,12,13,14]],
-        [[11,7,2,4,3,12],[0,1,3],[0,1,5,6,8,9,10,13,14]],
-        [[0],[0],[1]],
-    ]
+resultados_aprendizaje = ('RA1: Propone algoritmos para solucionar problemas', 'RA2: Utiliza un lenguaje para implementar algoritmos')
 
 codificacion_preguntas = [
-    [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14], 
-    [0,2,1,3,4,5,6,7,8,9,10,11,12,13,14], 
-    [0,3,2,1,4,5,6,7,8,9,10,11,12,13,14], 
-    [0,4,2,3,1,5,6,7,8,9,10,11,12,13,14], 
-    [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]
+    [5,12,7,2,9,3,16,15,14,13,19,6,10,11,1],
+    [1,8,12,7,17,19,13,17,2,14,4,10,3,15,0], 
+    [13,4,15,6,3,2,17,9,18,10,16,19,14,9,7], 
+    [10,8,9,14,11,7,3,2,6,12,5,15,17,0,13]
 ]
+resultados_aprendizaje_generales = [[0,1,2,3,4,5,6,7,8,9],[10,11,12,13,14,15,16,17,18,19]]
 
-num_examenes = 1
+preg_res_aprendizaje = []
+
+for cod in codificacion_preguntas:
+    prog_cod = []
+    for i in range(len(resultados_aprendizaje_generales)):
+        res = []
+        for pre in cod:
+            if pre in resultados_aprendizaje_generales[i]:
+                res.append(pre) 
+        prog_cod.append(res)
+    preg_res_aprendizaje.append(prog_cod)
+
+
+num_examenes = 4
 codificacion_examenes = ["A", "B", "C", "D", "E", "F", "G", "H"]
 
 def todo(data, respuestas, respuestas_totales, datos_examen,resultados_aprendizaje, preg_res_aprendizaje,estudiantes,estudiantes_tipo_examen): 
     generarInformeDocente(data, estudiantes)
-    generarInformeEstudiantes(data, respuestas_totales, resultados_aprendizaje, preg_res_aprendizaje, codificacion_examenes, num_correctas, consolidado, PDF)
+    generarInformeEstudiantes(data, respuestas_totales, resultados_aprendizaje, preg_res_aprendizaje, codificacion_examenes, num_correctas, consolidado, codificacion_preguntas, PDF)
     generarInformeGrupal(data, respuestas, respuestas_totales, datos_examen, resultados_aprendizaje, preg_res_aprendizaje,estudiantes_tipo_examen, codificacion_examenes, consolidado, codificacion_preguntas, PDF)
 
 if __name__ == '__main__':
@@ -57,7 +64,7 @@ if __name__ == '__main__':
     elif option == 2:
         generarInformeDocente(data, estudiantes)
     elif option == 3:
-        generarInformeEstudiantes(data, respuestas_totales, resultados_aprendizaje, preg_res_aprendizaje, codificacion_examenes, num_correctas, consolidado, PDF)
+        generarInformeEstudiantes(data, respuestas_totales, resultados_aprendizaje, preg_res_aprendizaje, codificacion_examenes, num_correctas, consolidado, codificacion_preguntas, PDF)
     elif option == 4:
         generarInformeGrupal(data, respuestas, respuestas_totales, datos_examen, resultados_aprendizaje, preg_res_aprendizaje,estudiantes_tipo_examen, codificacion_examenes, consolidado, codificacion_preguntas, PDF)
     elif option == 5:

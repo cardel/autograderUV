@@ -40,7 +40,7 @@ def generarInformeGrupal(data, respuestas, respuestas_totales, datos_examen, res
         
         respuestas_correctas = consolidado[cod][0]
         respuestas_marcadas = consolidado[cod][1]
-        num_preg = 0
+        cnt_preg = 0
         for marcada_examen, correcta_examen in zip(respuestas_marcadas, respuestas_correctas):
             conteo_pregunta = 0 #Cuenta el porcentaje de la pregunta
             marcada_examen_lst = marcada_examen.split("|")
@@ -60,10 +60,11 @@ def generarInformeGrupal(data, respuestas, respuestas_totales, datos_examen, res
             #Corregir respuestas negativas
             if conteo_pregunta < 0:
                 conteo_pregunta = 0
+            num_preg = codificacion_preguntas[int(tipo_examen)][cnt_preg]
             promedio_preg[num_preg] += conteo_pregunta
             examen_por_estudiante.append(conteo_pregunta)
             respondidas_preguntas[num_preg].append(conteo_pregunta)
-            num_preg+=1
+            cnt_preg+=1
         count+=1
         #Expandir a 20 preguntas
         examen_general_estudiante = np.zeros(respuestas.shape[1])

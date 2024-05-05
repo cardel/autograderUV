@@ -1,6 +1,6 @@
 import numpy as np
 
-def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_res_aprendizaje, codificacion_examenes, num_correctas, consolidado, PDF):
+def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_res_aprendizaje, codificacion_examenes, num_correctas, consolidado, codificacion_preguntas, PDF):
     #Informe por estudiante
     for cod,tipo_examen in zip(data["codigo"].values, data["examen"].values):
         respuestas = respuestas_totales[int(tipo_examen)]
@@ -37,7 +37,7 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
 
         pos = 6
         count = 1
-        estadisticas = []
+        estadisticas = np.zeros(20)
         respuestas_correctas = consolidado[cod][0]
         marcadas = consolidado[cod][1]
         
@@ -74,7 +74,8 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
             else:
                 pdf.set_text_color(255, 0, 0)
                 pdf.text(160 + 15, 74 + pos, str(round(numero_correctas*100,2))+"%")
-            estadisticas.append(numero_correctas)
+            num_pregunta = codificacion_preguntas[int(tipo_examen)][count-1]
+            estadisticas[num_pregunta] = numero_correctas
             pdf.set_text_color(0, 0, 0)
             pdf.line(5, 76 + pos, 200, 76 + pos)
             pdf.line(200, 76 + pos, 200, 68 + pos)
@@ -89,24 +90,47 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
         pdf.text(10, 80 + pos, "Número de correctas: " + str(round(num_correctas_marcadas,2)))
         pdf.text(10, 90 + pos, "Preguntas correctas para 5.0: " + str(num_correctas))
         pdf.set_font("Times", "B", 22)
-        pos+=10
+        pos+=5
         pdf.text(10, 100 + pos, "Tus habilidades 0.0 a 5.0:")
         x = 0
         y = 0
         movx = 57 #Espacio para reporte
         movy = 10
         pdf.set_font("Times", "", 16)
+        general = codificacion_preguntas[int(tipo_examen)]
         for label, value, preg in zip(res_aprendizaje, val_res_aprendizaje, preg_res_aprendizaje[int(tipo_examen)]):
             pdf.text(10 + x, 110 + pos + y, label + ": " + str(round(value*5,1)) )
             y += movy
-            pdf.text(10 + x, 110 + pos + y, "Preguntas asociadas: " + str(np.array(preg)+1))
+            index = list(map(lambda x: general.index(x), preg))
+            pdf.text(10 + x, 110 + pos + y, "Preguntas asociadas: " + str(np.array(index)+1))
             y += movy
-        pos+=y
+        pos+=y-10
         pdf.set_font("Times", "B", 22)
+        pdf.text(10, 130 + pos, "Mapeo de preguntas:")
+
+        posx = 0
+        pos+=10
+        pdf.set_font("Times", "", 16)
+        pdf.line(5, 125+pos, 202, 125+pos)
+        pdf.text(10, 130+pos, "Pregunta exámen")
+        pdf.text(10, 140+pos, "Solucionario")
+        pdf.line(5, 145+pos, 202, 145+pos)
+        pdf.line(5,125+pos, 5, 145+pos)
+
+        for i in range(0,len(codificacion_preguntas[int(tipo_examen)])):
+            pdf.line(51+posx, 125+pos, 51+posx, 145+pos)
+            pdf.text(54+posx, 130+pos, str(i+1) )
+            pdf.text(54+posx, 140+pos, str(codificacion_preguntas[int(tipo_examen)][i]+1))
+            posx += 10
+        pdf.line(202,125+pos , 202 ,145+pos)
+        pos+=30
+        pdf.set_font("Times", "B", 22)
+        """
         pdf.text(10, 130 + pos, "Apuntes finales:")
         pdf.set_font("Times", "", 16)
         pdf.text(10, 140 + pos, "Revisa la segunda página del informe y escribe un correo en caso de alguna inconsistencia")
         pdf.text(10, 150 + pos, "Escribe un correo a: carlos.andres.delgado@correounivalle.edu.co")
+        """
         pdf.add_page()
         pdf.image("data/procesado/" + nombrearchivo+".png",x=10,y=2,w=200,h=280)
         pdf.output('output/reports/' + nombre + "-" + codigo + ".pdf", 'F')
