@@ -25,35 +25,56 @@ def generarInformeGrupal(data, respuestas, respuestas_totales, datos_examen, res
 
 
     total_grupo = data["codigo"].values.shape[0]
-    preguntas = np.zeros((total_grupo, respuestas_totales[0].shape[1]))
 
     count = 0
-    promedio_preg = np.zeros(respuestas_totales[0].shape[1])
+    promedio_preg = np.zeros(respuestas.shape[1])
     examen = dict()
     resultados_estudiantes = []
+    total_respondidas_examen = np.zeros(respuestas.shape[1])
+    respondidas_preguntas = []
+    for i in range(respuestas.shape[1]):
+        respondidas_preguntas.append([])
+
     for cod,tipo_examen in zip(data["codigo"].values,data["examen"].values):
         examen_por_estudiante = []
-
+        
         respuestas_correctas = consolidado[cod][0]
         respuestas_marcadas = consolidado[cod][1]
         num_preg = 0
+        respondida_estudiante = []
         for marcada_examen, correcta_examen in zip(respuestas_marcadas, respuestas_correctas):
             if marcada_examen in correcta_examen:
-                promedio_preg[num_preg] += 1/total_grupo
+                promedio_preg[num_preg] += 1
                 examen_por_estudiante.append(1)
+                respondidas_preguntas[num_preg].append(1)
             else:
-                examen_por_estudiante.append(0)    
+                examen_por_estudiante.append(0)
+                respondidas_preguntas[num_preg].append(0)
             num_preg+=1
         count+=1
         #Expandir a 20 preguntas
         examen_general_estudiante = np.zeros(respuestas.shape[1])
-        examen_general_estudiante[codificacion_preguntas] = examen_por_estudiante
+        examen_general_estudiante[codificacion_preguntas] = examen_por_estudiante     
+        total_respondidas_examen[codificacion_preguntas] += 1
         examen[cod] = (int(tipo_examen), examen_general_estudiante)
         resultados_estudiantes.append(examen_general_estudiante)
 
     resultados_estudiantes = np.array(resultados_estudiantes)
-    std_preg = np.std(resultados_estudiantes, axis = 0)
-    porcentaje_preg = np.sum(resultados_estudiantes, axis=0)/total_grupo
+    #Calcular promedio por pregunta
+    for i in range(promedio_preg.shape[0]):
+        if total_respondidas_examen[i] == 0:
+            promedio_preg[i] = 0
+        else:
+            promedio_preg[i] /= total_respondidas_examen[i]
+
+    std_preg = np.zeros(respuestas.shape[1])
+    #Calcular la desviación estandar por pregunta
+    for i in range(std_preg.shape[0]):
+        if (len(respondidas_preguntas[i]) == 0):
+            std_preg[i] = 0
+        else:
+            std_preg[i] = np.std(respondidas_preguntas[i])
+
     pdf.add_page()
     pdf.set_font("Times", "B", 22)
     pdf.text(65, 12, "Informe grupal parcial")
@@ -121,13 +142,15 @@ def generarInformeGrupal(data, respuestas, respuestas_totales, datos_examen, res
     pdf.set_font("Times", "", 16)
     pdf.line(5, 70 + pos, 5, 62 + pos)
     pdf.line(5, 62 + pos, 200, 62 + pos)
-    pdf.text(7, 68 + pos, "Pregunta")
+    pdf.text(10, 68 + pos, "Pregunta")
     pdf.line(40, 70 + pos, 40, 62 + pos)
-    pdf.text(45, 68 + pos, "Promedio")
-    pdf.line(100, 70 + pos, 100, 62 + pos)
-    pdf.text(105, 68 + pos, "desv stand")
+    pdf.text(45, 68 + pos, "Respondidas")
+    pdf.line(78, 70 + pos, 78, 62 + pos)
+    pdf.text(85, 68 + pos, "Promedio")
+    pdf.line(112, 70 + pos, 112, 62 + pos)
+    pdf.text(120, 68 + pos, "desv stand")
     pdf.line(155, 70 + pos, 155, 62 + pos)
-    pdf.text(160, 68 + pos, "% correcta")
+    pdf.text(164, 68 + pos, "% correcta")
     pdf.line(5, 70 + pos, 200, 70 + pos)
     pdf.line(200, 70 + pos, 200, 62 + pos)
     idx_preg = 0
@@ -137,11 +160,13 @@ def generarInformeGrupal(data, respuestas, respuestas_totales, datos_examen, res
     for preg in preguntas_estudiantes_totales:
         if respuestas.iloc[0,cnt] != "ANULADA":
             pdf.line(5, 76 + pos, 5, 68 + pos)
-            pdf.text(7 + 12, 74 + pos, str(count))
+            pdf.text(10 + 12, 74 + pos, str(count))
             pdf.line(40, 76 + pos, 40, 68 + pos)
-            pdf.text(45 + 20, 74 + pos, str(round(5*preg.mean(),2)))
-            pdf.line(100, 76 + pos, 100, 68 + pos)
-            pdf.text(105 + 20, 74 + pos, str(round(5*preg.std(),2)))
+            pdf.text(57, 74 + pos, str(len(respondidas_preguntas[cnt])))
+            pdf.line(78, 76 + pos, 78, 68 + pos)
+            pdf.text(71 + 20, 74 + pos, str(round(5*preg.mean(),2)))
+            pdf.line(112, 76 + pos, 112, 68 + pos)
+            pdf.text(110 + 20, 74 + pos, str(round(5*preg.std(),2)))
             pdf.line(155, 76 + pos, 155, 68 + pos)
 
             correcta = preg.mean()
@@ -153,7 +178,7 @@ def generarInformeGrupal(data, respuestas, respuestas_totales, datos_examen, res
                 pdf.set_text_color(0, 0, 255)
             else:
                 pdf.set_text_color(255, 0, 0)
-            pdf.text(160 + 15, 74 + pos, str(round(100*correcta,2)) + "%")
+            pdf.text(160 + 10, 74 + pos, str(round(100*correcta,2)) + "%")
             pdf.set_text_color(0, 0, 0)
             pos += 6
         idx_preg+=1
@@ -161,7 +186,7 @@ def generarInformeGrupal(data, respuestas, respuestas_totales, datos_examen, res
     
 
         movy = 10  # Espacio para reporteid
-    cnt+=1
+        cnt+=1
 
     
     pdf.output("output/reporteGrupal.pdf", 'F')
