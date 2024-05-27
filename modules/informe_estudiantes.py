@@ -63,17 +63,17 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
                     numero_correctas-=1/(5-total_correctas)
 
             if "ANULADA" in correcta_examen:
-                numero_correctas = 1
-
-            if numero_correctas < 0:
                 numero_correctas = 0
-
-            if numero_correctas >= 0.5 or "ANULADA" in correcta_examen:
-                pdf.set_text_color(0, 0, 255)
-                pdf.text(160 + 15, 74 + pos, str(round(numero_correctas*100,2))+"%")
             else:
-                pdf.set_text_color(255, 0, 0)
-                pdf.text(160 + 15, 74 + pos, str(round(numero_correctas*100,2))+"%")
+                if numero_correctas < 0:
+                    numero_correctas = 0
+            
+                if numero_correctas >= 0.5 or "ANULADA" in correcta_examen:
+                    pdf.set_text_color(0, 0, 255)
+                    pdf.text(160 + 15, 74 + pos, str(round(numero_correctas*100,2))+"%")
+                else:
+                    pdf.set_text_color(255, 0, 0)
+                    pdf.text(160 + 15, 74 + pos, str(round(numero_correctas*100,2))+"%")
             num_pregunta = codificacion_preguntas[int(tipo_examen)][count-1]
             estadisticas[num_pregunta] = numero_correctas
             pdf.set_text_color(0, 0, 0)
