@@ -13,21 +13,19 @@ from modules.procesar import procesar
 class PDF(FPDF):
     pass  # nothing happens when it is executed.
 
-num_correctas = 13.5
+num_correctas = 13
 fecha = '04 de junio de 2024'
-materia = "Introducción al análisis numérico"
-examen = "Parcial 2"
-resultados_aprendizaje = ("Redes complejas","Algoritmos evolutivos","Caos","Fractales","Teoría de juegos","Automatas celulares")
+materia = "Programación funcional"
+examen = "Examen final"
+resultados_aprendizaje = ("RA1 Programación funcional", "RA2: Programación concurrente")
 
 codificacion_preguntas = [
-    [7, 19, 12, 8, 18, 9, 3, 13, 14, 4, 10, 6, 2, 16, 0],
-    [6, 9, 13, 16, 1, 5, 2, 15, 14, 3, 18, 7, 12, 0, 4], 
-     [15, 7, 9, 11, 3, 1, 10, 12, 13, 2, 17, 14, 4, 5, 18],
-
-    [6, 10, 5, 7, 2, 9, 19, 17, 3, 16, 14, 8, 13, 4, 15]
-    
+    [12, 15, 0, 10, 9, 13, 1, 4, 16, 3, 8, 2, 5, 11, 6],
+    [6, 13, 0, 7, 4, 2, 1, 5, 10, 9, 3, 15, 16, 11, 12],
+    [16, 12, 9, 7, 4, 14, 8, 1, 11, 2, 13, 15, 5, 0, 10],
+    [8, 13, 2, 0, 10, 5, 14, 1, 16, 9, 7, 6, 4, 11, 12],
 ]
-resultados_aprendizaje_generales = [[5,7,8,9],[15,16,19],[3,6,18],[10,11,12],[0,1,2,4],[13,14,17]]
+resultados_aprendizaje_generales = [[0,1,2,3,4,5,6,7,8,9,10],[11,12,13,14,15,16]]
 
 preg_res_aprendizaje = []
 
