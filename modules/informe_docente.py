@@ -1,7 +1,7 @@
 def generarInformeDocente(data, estudiantes):
 	#Informe del profesor (csv con notas)
 	data_output = estudiantes.copy()
-	data_output["correctas"] = 0
+	data_output["correctas"] = 0.0
 	data_output["nota"] = 0.0
 	for idx, row in data_output.iterrows():
 		codEstudiante = row["codigo"]
