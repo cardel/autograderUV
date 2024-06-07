@@ -73,7 +73,7 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
                     pdf.text(160 + 15, 74 + pos, str(round(numero_correctas*100,2))+"%")
                 else:
                     pdf.set_text_color(255, 0, 0)
-                    pdf.text(160 + 15, 74 + pos, str(round(numero_correctas*100,2))+"%")
+                pdf.text(160 + 15, 74 + pos, str(round(numero_correctas*100,2))+"%")
             num_pregunta = codificacion_preguntas[int(tipo_examen)][count-1]
             estadisticas[num_pregunta] = numero_correctas
             pdf.set_text_color(0, 0, 0)
@@ -95,7 +95,7 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
         x = 0
         y = 0
         movx = 57 #Espacio para reporte
-        movy = 10
+        movy = 8
         pdf.set_font("Times", "", 16)
         general = codificacion_preguntas[int(tipo_examen)]
         for label, value, preg in zip(res_aprendizaje, val_res_aprendizaje, preg_res_aprendizaje[int(tipo_examen)]):
@@ -132,6 +132,6 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
         pdf.text(10, 150 + pos, "Escribe un correo a: carlos.andres.delgado@correounivalle.edu.co")
         """
         pdf.add_page()
-        pdf.image("data/procesado/" + nombrearchivo+".png",x=10,y=2,w=200,h=280)
+        pdf.image("data/procesado/" + nombrearchivo+".jpg",x=10,y=2,w=200,h=280)
         pdf.output('output/reports/' + nombre + "-" + codigo + ".pdf", 'F')
 
