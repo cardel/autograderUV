@@ -55,7 +55,8 @@ def generarInformeGrupal(data, respuestas, respuestas_totales, datos_examen, res
                     if marcada in correcta_examen_lst:
                         conteo_pregunta += 1/len(correcta_examen_lst)
                     else:
-                        conteo_pregunta -= 1/(5 - len(correcta_examen_lst))
+                        if marcada != "No marcada":
+                            conteo_pregunta -= 1/(5 - len(correcta_examen_lst))
             #Corregir respuestas negativas
             if conteo_pregunta < 0:
                 conteo_pregunta = 0

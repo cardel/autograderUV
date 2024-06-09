@@ -81,7 +81,8 @@ def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha,
                     if resp in respuestas_correctas:
                         valor_pregunta += 1.0/total_correctas
                     else:
-                        valor_pregunta -= 1.0/(5.0 - total_correctas)
+                        if resp != "No marcada":
+                            valor_pregunta -= 1.0/(5.0 - total_correctas)
             if valor_pregunta < 0:
                 valor_pregunta = 0
             correctas += valor_pregunta

@@ -42,44 +42,44 @@ def generarInformeEstudiantes(data, respuestas_totales, res_aprendizaje, preg_re
         marcadas = consolidado[cod][1]
         
         for correcta_examen, marcada_examen in zip(respuestas_correctas, marcadas):
-            correcta_examen = correcta_examen.split("|")
-            pdf.line(5, 76 +pos, 5, 68 +pos)
-            pdf.text(7 + 12, 74 + pos, str(count))
-            pdf.line(40, 76 + pos, 40, 68 + pos)
-            pdf.text(45 + 20, 74 + pos, str(marcada_examen))
-            pdf.line(100, 76 + pos, 100, 68 + pos)
-            #Agregar otros factores
-            otros = ""
-            factor = len(otros)+3 if len(otros)>0 else 0
-            pdf.text(105 + 20 - factor, 74 + pos, "|".join(correcta_examen)+otros)
-            pdf.line(155, 76 + pos, 155, 68 + pos)
-            numero_correctas = 0
-            total_correctas = len(correcta_examen)
-            
-            for marcada in marcada_examen.split("|"):
-                if marcada in correcta_examen:
-                    numero_correctas+=1/total_correctas
-                else:
-                    numero_correctas-=1/(5-total_correctas)
 
-            if "ANULADA" in correcta_examen:
+            correcta_examen = correcta_examen.split("|")
+            if not("ANULADA" in correcta_examen):
+                pdf.line(5, 76 +pos, 5, 68 +pos)
+                pdf.text(7 + 12, 74 + pos, str(count))
+                pdf.line(40, 76 + pos, 40, 68 + pos)
+                pdf.text(45 + 20, 74 + pos, str(marcada_examen))
+                pdf.line(100, 76 + pos, 100, 68 + pos)
+                #Agregar otros factores
+                otros = ""
+                factor = len(otros)+3 if len(otros)>0 else 0
+                pdf.text(105 + 20 - factor, 74 + pos, "|".join(correcta_examen)+otros)
+                pdf.line(155, 76 + pos, 155, 68 + pos)
                 numero_correctas = 0
-            else:
+                total_correctas = len(correcta_examen)
+
+                for marcada in marcada_examen.split("|"):
+                    if marcada in correcta_examen:
+                        numero_correctas+=1/total_correctas
+                    else:
+                        if marcada != "No marcada":
+                            numero_correctas-=1/(5-total_correctas)
+
                 if numero_correctas < 0:
                     numero_correctas = 0
             
-                if numero_correctas >= 0.5 or "ANULADA" in correcta_examen:
+                if numero_correctas >= 0.5:
                     pdf.set_text_color(0, 0, 255)
                     pdf.text(160 + 15, 74 + pos, str(round(numero_correctas*100,2))+"%")
                 else:
                     pdf.set_text_color(255, 0, 0)
                 pdf.text(160 + 15, 74 + pos, str(round(numero_correctas*100,2))+"%")
-            num_pregunta = codificacion_preguntas[int(tipo_examen)][count-1]
-            estadisticas[num_pregunta] = numero_correctas
-            pdf.set_text_color(0, 0, 0)
-            pdf.line(5, 76 + pos, 200, 76 + pos)
-            pdf.line(200, 76 + pos, 200, 68 + pos)
-            pos+=6
+                num_pregunta = codificacion_preguntas[int(tipo_examen)][count-1]
+                estadisticas[num_pregunta] = numero_correctas
+                pdf.set_text_color(0, 0, 0)
+                pdf.line(5, 76 + pos, 200, 76 + pos)
+                pdf.line(200, 76 + pos, 200, 68 + pos)
+                pos+=6
             count+=1
 
         estadisticas = np.array(estadisticas)
