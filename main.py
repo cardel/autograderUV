@@ -13,18 +13,22 @@ from modules.procesar import procesar
 class PDF(FPDF):
     pass  # nothing happens when it is executed.
 
-num_correctas = 12
-fecha = '05 de junio de 2024'
-materia = "Introducción al análisis numérico"
-examen = "Examen parcial III"
-resultados_aprendizaje = ("RA2: Comprendela naturaleza de la solución numérica de sistemas lineales y no  lineales",)
+num_correctas = 11.5
+fecha = '06 de junio de 2024'
+materia = "Fundamentos de lenguajes de programación"
+examen = "Examen parcial II"
+resultados_aprendizaje = ("RA2: Aplica técnicas para representar programas, análisis lexico y semántico",)
 
 
 codificacion_preguntas = [
-    [14, 3, 9, 8, 12, 0, 2, 7, 13, 6, 4, 10, 11, 5, 1],
-    [5, 6, 10, 1, 4, 14, 13, 0, 8, 12, 11, 3, 7, 9, 2],
-    [1, 0, 14, 12, 10, 7, 6, 4, 2, 13, 3, 5, 8, 11, 9],
-    [8, 7, 6, 12, 13, 10, 9, 2, 4, 11, 14, 3, 0, 5, 1]
+    [19, 14, 11, 16, 8, 5, 1, 9, 4, 0, 10, 15, 12, 17, 13],
+    [10, 0, 15, 4, 9, 14, 12, 5, 11, 2, 1, 7, 19, 6, 8],
+    [3, 5, 10, 2, 12, 13, 18, 0, 4, 11, 1, 7, 14, 15, 6],
+    [18, 3, 19, 8, 2, 17, 6, 12, 13, 15, 11, 10, 9, 14, 7],
+    [12, 10, 9, 16, 8, 18, 6, 19, 3, 0, 5, 2, 11, 7, 1],
+    [19, 11, 15, 8, 6, 5, 4, 1, 3, 14, 10, 2, 7, 9, 17],
+    [10, 8, 13, 4, 16, 5, 18, 7, 3, 11, 17, 0, 19, 15, 9],
+    [11, 14, 13, 17, 12, 8, 19, 10, 5, 0, 7, 1, 15, 9, 4]
 ]
 resultados_aprendizaje_generales = [[1,2,3,4,5,6,7,9,10,11,12,13,14,15]]
 
@@ -41,7 +45,7 @@ for cod in codificacion_preguntas:
     preg_res_aprendizaje.append(prog_cod)
 
 
-num_examenes = 4
+num_examenes = 8
 codificacion_examenes = ["A", "B", "C", "D", "E", "F", "G", "H"]
 
 def todo(data, respuestas, respuestas_totales, datos_examen,resultados_aprendizaje, preg_res_aprendizaje,estudiantes,estudiantes_tipo_examen): 

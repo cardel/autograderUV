@@ -2,7 +2,26 @@ import pandas as pd
 import numpy as np
 
 def crear_codigo(value):
-    return str(value)
+    value = str(value)
+    elements = value.split("|")
+    if len(elements) == 1:
+        return str(value)
+    else:
+        if elements[0] == "0" and elements[1] == "1":
+            return "4"
+        elif elements[0] == "0" and elements[1] == "2":
+            return "5"
+        elif elements[0] == "0" and elements[1] == "3":
+            return "6"
+        elif elements[0] == "1" and elements[1] == "2":
+            return "7"
+        elif elements[0] == "1" and elements[1] == "3":
+            return "8"
+        elif elements[0] == "2" and elements[1] == "3":
+            return "9"
+        else:
+            raise ValueError("Error en la codificación de la pregunta")
+    
 
 def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha, examen, codificacion_preguntas):
     data = pd.read_csv("data/resultados.csv")
