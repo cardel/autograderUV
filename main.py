@@ -1,8 +1,8 @@
 """
 Carlos Andres Delgado
 Script para calificar examenes
-Fecha: Mayo 05 2024
-Versión: 1.1
+Fecha: Junio 9 2024
+Versión: 1.5
 """
 from fpdf import FPDF
 from modules.informe_docente import generarInformeDocente
@@ -15,18 +15,18 @@ class PDF(FPDF):
 
 num_correctas = 12
 fecha = '05 de junio de 2024'
-materia = "Fundamentos de Programación imperativa"
-examen = "Examen parcial II"
-resultados_aprendizaje = ("RA1 Propone algoritmos para resolver problemas", "RA2: Utiliza un lenguaje de programación")
+materia = "Introducción al análisis numérico"
+examen = "Examen parcial III"
+resultados_aprendizaje = ("RA2: Comprendela naturaleza de la solución numérica de sistemas lineales y no  lineales",)
 
 
 codificacion_preguntas = [
-    [7, 19, 12, 8, 18, 9, 3, 13, 14, 4, 10, 6, 2, 16, 0],
-    [6, 9, 13, 16, 1, 5, 2, 15, 14, 3, 18, 7, 12, 0, 4],
-    [15, 7, 9, 11, 3, 1, 10, 12, 13, 2, 17, 14, 4, 5, 18],
-    [6, 10, 5, 7, 2, 9, 19, 17, 3, 16, 14, 8, 13, 4, 15]
+    [14, 3, 9, 8, 12, 0, 2, 7, 13, 6, 4, 10, 11, 5, 1],
+    [5, 6, 10, 1, 4, 14, 13, 0, 8, 12, 11, 3, 7, 9, 2],
+    [1, 0, 14, 12, 10, 7, 6, 4, 2, 13, 3, 5, 8, 11, 9],
+    [8, 7, 6, 12, 13, 10, 9, 2, 4, 11, 14, 3, 0, 5, 1]
 ]
-resultados_aprendizaje_generales = [[13,4,0],[1,2,3,5,6,9,10,11,12,14,15,16,17,18,19]]
+resultados_aprendizaje_generales = [[1,2,3,4,5,6,7,9,10,11,12,13,14,15]]
 
 preg_res_aprendizaje = []
 
