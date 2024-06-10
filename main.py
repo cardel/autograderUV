@@ -13,9 +13,9 @@ from modules.procesar import procesar
 class PDF(FPDF):
     pass  # nothing happens when it is executed.
 
-num_correctas = 13.5
+num_correctas = 13
 fecha = '04 de junio de 2024'
-materia = "Introducción al análisis numérico"
+materia = "Vida artificial"
 examen = "Parcial 2"
 resultados_aprendizaje = ("Redes complejas","Algoritmos evolutivos","Caos","Fractales","Teoría de juegos","Automatas celulares")
 
