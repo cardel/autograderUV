@@ -20,6 +20,7 @@ repo_grades = pd.merge(repo, grades, on="github_username")
 repo_save = repo_grades[["Nombre completo","Nombre de usuario","github_username","points_awarded","points_available"]].copy()
 
 repo_save.loc[:, "nota"] = 5 * repo_save["points_awarded"] / repo_save["points_available"]
+repo_save["nota"].round(1,inplace=True)
 repo_save.sort_values("Nombre completo", ascending=True, inplace=True)
 repo_save.to_csv("notas.csv")
 
