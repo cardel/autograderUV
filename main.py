@@ -19,6 +19,7 @@ materia = "Fundamentos de Programación imperativa"
 examen = "Parcial 1"
 resultados_aprendizaje = ('RA1: Propone algoritmos para solucionar problemas', 'RA2: Utiliza un lenguaje para implementar algoritmos')
 
+
 codificacion_preguntas = [
     [5,12,7,2,9,3,16,15,14,13,19,6,10,11,1],
     [1,8,12,7,17,19,13,17,2,14,4,10,3,15,0], 
