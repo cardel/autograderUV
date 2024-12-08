@@ -492,3 +492,8 @@ gradle-app.setting
 
 # Ignore Gradle build output directory
 
+#Ignore pdf and jpg or png files
+*.pdf
+*.jpg
+*.png
+!templates/*
