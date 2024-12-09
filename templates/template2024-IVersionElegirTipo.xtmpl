@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<template density="100" threshold="220" version="2.1">
+<template density="96" threshold="230" version="2.1">
     <crop bottom="0" left="0" right="0" top="0"/>
     <rotation angle="-0.0027985001570828187"/>
     <corners type="ROUND">
-        <corner position="BOTTOM_RIGHT">
-            <point x="2307.0" y="3073.0"/>
+        <corner position="TOP_LEFT">
+            <point x="183.0" y="278.0"/>
         </corner>
         <corner position="TOP_RIGHT">
             <point x="2327.0" y="284.0"/>
@@ -12,11 +12,11 @@
         <corner position="BOTTOM_LEFT">
             <point x="196.0" y="3071.0"/>
         </corner>
-        <corner position="TOP_LEFT">
-            <point x="183.0" y="278.0"/>
+        <corner position="BOTTOM_RIGHT">
+            <point x="2307.0" y="3073.0"/>
         </corner>
     </corners>
-    <fields groups="true" shape="CIRCLE" size="6">
+    <fields groups="true" shape="CIRCLE" size="15">
         <group name="tipo">
             <question multiple="true" question="Pregunta023" rejectMultiple="false" type="QUESTIONS_BY_ROWS">
                 <values>
