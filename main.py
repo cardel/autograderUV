@@ -16,11 +16,11 @@ class PDF(FPDF):
     pass  # nothing happens when it is executed.
 
 
-num_examenes = 2
-num_correctas = 14
-fecha = "Martes, 3 de diciembre de 2024"
-materia = "Fundamentos de programación funcional y concurrente"
-examen = "Examen final"
+num_examenes = 4
+num_correctas = 12
+fecha = "Jueves, 14 de Noviembre de 2024"
+materia = "Fundamentos de lenguajes de programación"
+examen = "Primer exámen"
 resultados_aprendizaje = (
     "RA1: Desarrolla programas en estilo funcional",
     "RA2: Desarrolla programas paralelos",
@@ -28,12 +28,14 @@ resultados_aprendizaje = (
 
 
 codificacion_preguntas = [
-    [12, 15, 0, 10, 9, 13, 1, 4, 16, 3, 8, 2, 5, 11, 6],
-    [6, 13, 14, 7, 4, 2, 1, 5, 10, 9, 3, 15, 16, 11, 12],
+    [19, 8, 1, 10, 17, 11, 16, 8, 13, 3, 7, 12, 5, 4, 2],
+    [5, 15, 16, 0, 2, 17, 3, 14, 6, 11, 13, 4, 18, 19, 10],
+    [1, 10, 15, 3, 17, 13, 4, 16, 9, 0, 7, 14, 6, 5, 11],
+    [16, 8, 13, 3, 19, 12, 11, 17, 10, 14, 2, 4, 5, 18, 7],
 ]
 resultados_aprendizaje_generales = [
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16],
-    [12, 13, 14, 15],
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 18, 19],
+    [11, 12, 13, 1, 4, 15, 16, 17],
 ]
 
 # Fin de variables iniciales del programa
