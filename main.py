@@ -17,25 +17,23 @@ class PDF(FPDF):
 
 
 num_examenes = 4
-num_correctas = 12
-fecha = "Jueves, 14 de Noviembre de 2024"
+num_correctas = 11
+fecha = "Jueves, 05 de Diciembre de 2024"
 materia = "Fundamentos de lenguajes de programación"
-examen = "Primer exámen"
+examen = "Segundo exámen"
 resultados_aprendizaje = (
-    "RA1: Desarrolla programas en estilo funcional",
-    "RA2: Desarrolla programas paralelos",
+    "RA1: Abstración de datos",
+    "RA2: Semántica de lenguajes de programación",
 )
 
 
 codificacion_preguntas = [
-    [19, 8, 1, 10, 17, 11, 16, 8, 13, 3, 7, 12, 5, 4, 2],
-    [5, 15, 16, 0, 2, 17, 3, 14, 6, 11, 13, 4, 18, 19, 10],
-    [1, 10, 15, 3, 17, 13, 4, 16, 9, 0, 7, 14, 6, 5, 11],
-    [16, 8, 13, 3, 19, 12, 11, 17, 10, 14, 2, 4, 5, 18, 7],
+    [10, 14, 9, 3, 13, 7, 6, 11, 0, 8, 5, 2, 4, 12, 1],
+    [7, 1, 10, 4, 12, 8, 13, 5, 2, 11, 0, 3, 6, 14, 9],
 ]
 resultados_aprendizaje_generales = [
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 18, 19],
-    [11, 12, 13, 1, 4, 15, 16, 17],
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+    [12, 13, 14],
 ]
 
 # Fin de variables iniciales del programa
