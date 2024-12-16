@@ -10,6 +10,7 @@ from modules.informe_docente import generarInformeDocente
 from modules.informe_estudiantes import generarInformeEstudiantes
 from modules.informe_grupal import generarInformeGrupal
 from modules.procesar import procesar
+import numpy as np
 
 
 class PDF(FPDF):
@@ -17,24 +18,28 @@ class PDF(FPDF):
 
 
 num_examenes = 4
-num_correctas = 11
-fecha = "Jueves, 05 de Diciembre de 2024"
-materia = "Fundamentos de lenguajes de programación"
-examen = "Segundo exámen"
+num_correctas = 13
+num_preguntas = 28
+fecha = "Jueves, 12 de Noviembre de 2024"
+materia = "Infraestructuras paralelas y distribuidas"
+examen = "Primer exámen"
 resultados_aprendizaje = (
-    "RA1: Abstración de datos",
-    "RA2: Semántica de lenguajes de programación",
+    "RA1: Desarrolla programas paralelos en ambientes donde no se comparte memoria",
 )
 
 
-codificacion_preguntas = [
-    [10, 14, 9, 3, 13, 7, 6, 11, 0, 8, 5, 2, 4, 12, 1],
-    [7, 1, 10, 4, 12, 8, 13, 5, 2, 11, 0, 3, 6, 14, 9],
-]
-resultados_aprendizaje_generales = [
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-    [12, 13, 14],
-]
+codificacion_preguntas = np.array(
+    [
+        [5, 16, 12, 28, 3, 24, 11, 4, 17, 9, 22, 14, 7, 1, 19],
+        [10, 6, 15, 23, 4, 18, 26, 1, 12, 27, 3, 20, 8, 13, 5],
+        [2, 14, 25, 9, 7, 28, 16, 22, 11, 4, 5, 21, 3, 10, 17],
+        [13, 8, 26, 2, 23, 19, 1, 15, 27, 18, 12, 9, 6, 5, 21],
+    ]
+)
+
+codificacion_preguntas = (codificacion_preguntas - 1).tolist()
+
+resultados_aprendizaje_generales = [[i for i in range(0, 28)]]
 
 # Fin de variables iniciales del programa
 preg_res_aprendizaje = []
@@ -63,8 +68,9 @@ def todo(
     estudiantes,
     estudiantes_tipo_examen,
 ):
-    generarInformeDocente(data, estudiantes)
+    generarInformeDocente(num_preguntas, data, estudiantes)
     generarInformeEstudiantes(
+        num_preguntas,
         data,
         respuestas_totales,
         resultados_aprendizaje,
@@ -76,6 +82,7 @@ def todo(
         PDF,
     )
     generarInformeGrupal(
+        num_preguntas,
         data,
         respuestas,
         respuestas_totales,
@@ -128,9 +135,10 @@ if __name__ == "__main__":
             estudiantes_tipo_examen,
         )
     elif option == 2:
-        generarInformeDocente(data, estudiantes)
+        generarInformeDocente(num_preguntas, data, estudiantes)
     elif option == 3:
         generarInformeEstudiantes(
+            num_preguntas,
             data,
             respuestas_totales,
             resultados_aprendizaje,
@@ -143,6 +151,7 @@ if __name__ == "__main__":
         )
     elif option == 4:
         generarInformeGrupal(
+            num_preguntas,
             data,
             respuestas,
             respuestas_totales,

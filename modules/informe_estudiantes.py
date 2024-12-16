@@ -2,6 +2,7 @@ import numpy as np
 
 
 def generarInformeEstudiantes(
+    num_preguntas,
     data,
     respuestas_totales,
     res_aprendizaje,
@@ -14,7 +15,6 @@ def generarInformeEstudiantes(
 ):
     # Informe por estudiante
     for cod, tipo_examen in zip(data["codigo"].values, data["examen"].values):
-        respuestas = respuestas_totales[int(tipo_examen)]
         nombrearchivo = data[data["codigo"] == cod]["File name"].values[0]
         nombre = data[data["codigo"] == cod]["nombre"].values[0]
         codigo = data[data["codigo"] == cod]["codigo"].values[0]
@@ -52,7 +52,7 @@ def generarInformeEstudiantes(
 
         pos = 6
         count = 1
-        estadisticas = np.zeros(20)
+        estadisticas = np.zeros(num_preguntas)
         respuestas_correctas = consolidado[cod][0]
         marcadas = consolidado[cod][1]
 
