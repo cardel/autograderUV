@@ -18,28 +18,26 @@ class PDF(FPDF):
 
 
 num_examenes = 4
-num_correctas = 13
-num_preguntas = 28
-fecha = "Jueves, 12 de Noviembre de 2024"
-materia = "Infraestructuras paralelas y distribuidas"
-examen = "Primer exámen"
-resultados_aprendizaje = (
-    "RA1: Desarrolla programas paralelos en ambientes donde no se comparte memoria",
-)
+num_correctas = 10
+num_preguntas = 12
+fecha = "Jueves, 12  de Diciembre de 2024"
+materia = "Análisis de algoritmos II"
+examen = "Segundo exámen"
+resultados_aprendizaje = ("RA3: Aplica teoría de NP - completitud",)
 
 
 codificacion_preguntas = np.array(
     [
-        [5, 16, 12, 28, 3, 24, 11, 4, 17, 9, 22, 14, 7, 1, 19],
-        [10, 6, 15, 23, 4, 18, 26, 1, 12, 27, 3, 20, 8, 13, 5],
-        [2, 14, 25, 9, 7, 28, 16, 22, 11, 4, 5, 21, 3, 10, 17],
-        [13, 8, 26, 2, 23, 19, 1, 15, 27, 18, 12, 9, 6, 5, 21],
+        [8, 3, 11, 1, 6, 9, 4, 10, 2, 5, 7, 12],
+        [5, 12, 1, 7, 3, 9, 11, 2, 8, 6, 4, 10],
+        [10, 4, 7, 1, 8, 3, 12, 5, 11, 9, 6, 2],
+        [2, 6, 9, 12, 1, 10, 4, 7, 5, 8, 3, 11],
     ]
 )
 
 codificacion_preguntas = (codificacion_preguntas - 1).tolist()
 
-resultados_aprendizaje_generales = [[i for i in range(0, 28)]]
+resultados_aprendizaje_generales = [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11]]
 
 # Fin de variables iniciales del programa
 preg_res_aprendizaje = []
@@ -53,7 +51,6 @@ for cod in codificacion_preguntas:
                 res.append(pre)
         prog_cod.append(res)
     preg_res_aprendizaje.append(prog_cod)
-
 
 codificacion_examenes = ["A", "B", "C", "D", "E", "F", "G", "H"]
 
