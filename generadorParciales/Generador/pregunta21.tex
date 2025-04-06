@@ -1,0 +1,56 @@
+{
+Dada la siguiente gramática \\
+		\begin{boxedverbatim}
+<programa> ::= <expresion>
+
+<expresion>
+ ::= <numero>
+ ::= "true"
+ ::= "false"
+ ::= "def" <identificador>*
+      "do" <expresion> 
+		\end{boxedverbatim}
+  Seleccione la especificación gramatical de def-exp
+	\begin{enumerate}
+  \item { 
+\begin{lstlisting}	[basicstyle=\footnotesize]	
+(expresion 
+  ("def" 
+  (separated-list identificador ",")
+  "do"
+   (arbno expresion)
+  )
+  def-exp)
+\end{lstlisting} }
+		\item {
+\begin{lstlisting}	[basicstyle=\footnotesize]	
+(expresion 
+  ("def" 
+  (arbno identificador)
+  "do"
+   expresion
+  )
+  def-exp)
+\end{lstlisting} }%correcto
+  \item {
+\begin{lstlisting}	[basicstyle=\footnotesize]	
+(expresion 
+  ("def" 
+  identificador
+  "do"
+   (arbno expresion)
+  )
+  def-exp)
+\end{lstlisting} }
+  \item {
+
+\begin{lstlisting}	[basicstyle=\footnotesize]	
+(expresion 
+  ((arbno "def" 
+  identificador)
+  "do"
+   expresion
+  )
+  def-exp)
+\end{lstlisting} }
+}

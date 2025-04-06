@@ -1,0 +1,36 @@
+{
+Deseamos implementar las listas tipo Python en nuestro lenguaje, por ejemplo: $[1,2,4,5,6]$ ¿Cómo podemos modificar la especificación gramatical?
+  \begin{enumerate}
+    \item  {
+\begin{lstlisting}	[basicstyle=\footnotesize]	
+(expresion 
+  ("[" (arbno expresion ",") "]")
+list-exp)
+\end{lstlisting} }
+
+    \item  {
+\begin{lstlisting}	[basicstyle=\footnotesize]	
+(expresion 
+  ("[" (separated-list expresion ",") "]")
+list-exp)
+\end{lstlisting} } %correcta
+    \item  {
+\begin{lstlisting}	[basicstyle=\footnotesize]	
+(expresion 
+  ("[" (separated-list (arbno expresion) ",") "]")
+list-exp)
+\end{lstlisting} } 
+    \item  {
+
+\begin{lstlisting}	[basicstyle=\footnotesize]	
+(expresion 
+  ("[" (separated-list (arbno expresion ",")) "]")
+list-exp)
+\end{lstlisting} } 
+    \item  {
+\begin{lstlisting}	[basicstyle=\footnotesize]	
+(expresion 
+  ("[" (expresion ",") "]")
+list-exp)
+\end{lstlisting} } 
+}
