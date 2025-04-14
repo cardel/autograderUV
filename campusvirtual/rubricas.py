@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select
 import csv
 import time
 import os
@@ -9,9 +10,11 @@ import os
 # Configura tus datos
 USERNAME = os.getenv("MOODLE_USERNAME")
 PASSWORD = os.getenv("MOODLE_PASSWORD")
-TAREA_ID = "2334143"  # Cambia por el ID real de la tarea
+TAREA_ID = "2357642"  # Cambia por el ID real de la tarea
 CSV_PATH = "rubrica.csv"  # Ruta al archivo CSV
 NIVELES = [0, 5, 10, 15]  # Puntos por nivel
+DESCRIPCION = "Rubrica del primer taller de programación por restricciones 2025-I Univalle Sede Tulua"
+NOMBRE_RUBRICA = "Restricciones Taller 1 2025-1"  # Nombre de la rúbrica
 
 # Inicia navegador
 driver = webdriver.Chrome()
@@ -31,18 +34,25 @@ driver.get(
 # 3. Clic en "Calificación avanzada"
 wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Calificación avanzada"))).click()
 
+# 3.1 Revisar si rubrica esta activada, si no Cambia
+try:
+    select_element = wait.until(EC.presence_of_element_located((By.NAME, "setmethod")))
+    select = Select(select_element)
+    select.select_by_value("rubric")
+    time.sleep(2)
+finally:
+    print("✅ Método de calificación cambiado a Rúbrica.")
+
 # 4. Clic en "Nuevo formulario desde cero"
 wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".action-text"))).click()
 
 # 5. Insertar título y descripción
-wait.until(EC.presence_of_element_located((By.ID, "id_name"))).send_keys(
-    "Rúbrica automática"
-)
+wait.until(EC.presence_of_element_located((By.ID, "id_name"))).send_keys(NOMBRE_RUBRICA)
 descripcion = wait.until(
     EC.presence_of_element_located((By.ID, "id_description_editoreditable"))
 )
 descripcion.clear()
-descripcion.send_keys("Esta rúbrica fue generada automáticamente desde un archivo CSV.")
+descripcion.send_keys(DESCRIPCION)
 
 # 6. Cargar CSV
 with open(CSV_PATH, newline="", encoding="utf-8") as csvfile:
