@@ -86,10 +86,10 @@ analyze_repo() {
         echo "    - Líneas netas: $user_loc ($pct_total_loc% del total)" | tee -a "$output_file"
         
         # Estadísticas para documentos (solo .md en docs/)
-        doc_stats=$(git log --author="$i" --pretty=tformat: --numstat -- "docs/*.md" | \
-            awk '{add += $1; subs += $2; loc += $1 - $2} END {
-                printf "  - Documentación (.md en docs/):\n    - Líneas agregadas: %s\n    - Líneas eliminadas: %s\n    - Líneas netas: %s\n", add, subs, loc
-            }')
+		doc_stats=$(git log --author="$i" --pretty=tformat: --numstat --glob='*docs*/*.md' | \
+			awk '{add += $1; subs += $2; loc += $1 - $2} END {
+				printf "  - Documentación (.md en docs/):\n    - Líneas agregadas: %s\n    - Líneas eliminadas: %s\n    - Líneas netas: %s\n", add, subs, loc
+			}')
         echo "$doc_stats" | tee -a "$output_file"
         
         # Estadísticas para código (excluyendo .md)
