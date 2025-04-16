@@ -1,0 +1,6 @@
+Quiero que proceces el csv asi, agrega una columna nota_final, esta nota es numerica con un decimal entre 0.0 y 5.0
+
+Revisar points_awarded/points_available si esta relacion es 0, la nota es 0
+En otro caso revisar de acuerdo a la columna realimentación, son dos ejercicios si no se cumple en uno de ellos hacerlo por reconocimiento de patroones coloca 3.5, si no se cumple en ambos coloca 2.0
+
+Retorname unicamente ID y nota como csv
