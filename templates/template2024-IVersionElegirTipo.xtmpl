@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<template density="80" threshold="180" version="2.1">
+<template density="70" threshold="150" version="2.1">
     <crop bottom="0" left="0" right="0" top="0"/>
     <rotation angle="-0.0027985001570828187"/>
     <corners type="ROUND">
-        <corner position="TOP_LEFT">
-            <point x="183.0" y="278.0"/>
-        </corner>
         <corner position="TOP_RIGHT">
             <point x="2327.0" y="284.0"/>
+        </corner>
+        <corner position="TOP_LEFT">
+            <point x="183.0" y="278.0"/>
         </corner>
         <corner position="BOTTOM_LEFT">
             <point x="196.0" y="3071.0"/>

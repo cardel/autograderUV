@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# Crear el directorio de salida si no existe
 mkdir -p "../procesado"
 
-# Procesar cada archivo .jpg
 for file in *.jpg; do
-  magick "$file" \
-    -colorspace Gray \
-    -blur 0x2 \
-    -level 30%,90% \
-    -threshold 70% \
-    "../procesado/$file"
+	magick "$file" \
+		-colorspace Gray \
+		-adaptive-sharpen 0x1 \
+		-contrast-stretch 1% \
+		-blur 0x0.5 \
+		-threshold 80% \
+		-morphology Close Diamond:1 \
+		"../procesado/$file"
 done
