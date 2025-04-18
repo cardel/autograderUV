@@ -18,9 +18,9 @@ class PDF(FPDF):
 
 
 num_examenes = 4
-num_correctas = 13
+num_correctas = 14
 num_preguntas = 28
-fecha = "Jueves, 12 de Noviembre de 2024"
+fecha = "01 de Abril de 2025"
 materia = "Infraestructuras paralelas y distribuidas"
 examen = "Primer exámen"
 resultados_aprendizaje = (
@@ -29,12 +29,12 @@ resultados_aprendizaje = (
 
 
 codificacion_preguntas = np.array(
-    [
-        [5, 16, 12, 28, 3, 24, 11, 4, 17, 9, 22, 14, 7, 1, 19],
-        [10, 6, 15, 23, 4, 18, 26, 1, 12, 27, 3, 20, 8, 13, 5],
-        [2, 14, 25, 9, 7, 28, 16, 22, 11, 4, 5, 21, 3, 10, 17],
-        [13, 8, 26, 2, 23, 19, 1, 15, 27, 18, 12, 9, 6, 5, 21],
-    ]
+[
+    [6, 2, 19, 1, 13, 5, 12, 23, 7, 8, 9, 21, 25, 28, 26],
+    [23, 25, 24, 27, 20, 1, 22, 4, 12, 2, 21, 11, 6, 19, 5],
+    [13, 20, 9, 14, 19, 6, 27, 22, 24, 23, 16, 17, 12, 4, 15],
+    [11, 9, 17, 22, 8, 27, 24, 20, 7, 2, 5, 4, 18, 23, 26]
+]
 )
 
 codificacion_preguntas = (codificacion_preguntas - 1).tolist()
