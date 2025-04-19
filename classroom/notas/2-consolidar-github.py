@@ -13,8 +13,8 @@ def main():
     with open(input_github, "r", encoding="utf-8") as github_file:
         reader = csv.DictReader(github_file)
         for row in reader:
-            username = row["Indicar su usuario de Github"].strip().lower()
-            user_id = row["Número de ID"].strip()
+            username = row["github"].strip().lower()
+            user_id = row["Nombre de usuario"].strip()
             github_users[username] = user_id
 
     # Columnas deseadas en la salida

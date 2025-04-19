@@ -11,11 +11,10 @@ def read_filtered_result_file(file_path):
     # Tomar primeras 25 líneas (o menos si el archivo es más corto)
     filtered_lines = lines[:25]
 
-    # Buscar en las 3 primeras lineas la palabra "integrantes" sin distinción de mayúsculas
-    for i in range(3):
-        if re.search(r"integrantes", filtered_lines[i], re.IGNORECASE):
-            # Si se encuentra, eliminar la línea
-            del filtered_lines[i]
+    # Eliminar siempre la segunda línea (índice 1)
+    if len(filtered_lines) > 1:
+        del filtered_lines[1]
+
     # Eliminar lineas que tengan la palabra documentación (con tilde o sin ella) y sin diferencia de mayúscula sin acentos
     filtered_lines = [
         linea
@@ -30,13 +29,8 @@ def read_filtered_result_file(file_path):
 
 
 def process_result_files(result_files_dir):
-    """Procesa todos los archivos result_i y devuelve un diccionario por username"""
+    """Procesa todos los archivos result_i y devuelve un diccionario por repo_name"""
     result_data = {}
-
-    # Expresión regular mejorada para extraer el nombre del repositorio
-    repo_name_pattern = re.compile(
-        r"\*\*Repositorio:\*\*\s*(.*?)\s*$", re.IGNORECASE | re.MULTILINE
-    )
 
     for filename in sorted(os.listdir(result_files_dir)):
         if filename.startswith("result_") and not os.path.isdir(
@@ -44,35 +38,24 @@ def process_result_files(result_files_dir):
         ):
             file_path = os.path.join(result_files_dir, filename)
 
-            # Leer contenido para extraer nombre de repositorio
+            # Leer la primera línea para obtener el nombre del repositorio
             with open(file_path, "r", encoding="utf-8") as file:
-                # Leer suficiente para encontrar el nombre
-                content = file.read(1000)
+                repo_name = file.readline().strip()
 
-            repo_match = repo_name_pattern.search(content)
-            if not repo_match:
-                print(
-                    f"Advertencia: No se encontró nombre de repositorio en {filename}"
-                )
-                continue
+                # Leer el contenido filtrado (después de la primera línea)
+                feedback_content = read_filtered_result_file(file_path)
 
-            repo_name = repo_match.group(1).strip()
-            username = repo_name.split("/")[0].strip().lower()
+                # Eliminar la primera línea del feedback (ya que es el repo_name)
+                feedback_lines = feedback_content.split("\n")
+                if len(feedback_lines) > 1:
+                    feedback_content = "\n".join(feedback_lines[1:])
+                else:
+                    feedback_content = ""
 
-            if not username:
-                print(
-                    f"Advertencia: No se pudo extraer username de {repo_name} en {
-                        filename
-                    }"
-                )
-                continue
-
-            # Leer el contenido filtrado
-            feedback_content = read_filtered_result_file(file_path)
-            result_data[username] = {
-                "repo_name": repo_name,
-                "feedback": feedback_content,
-            }
+                result_data[repo_name.lower()] = {
+                    "repo_name": repo_name,
+                    "feedback": feedback_content,
+                }
 
     return result_data
 
@@ -80,6 +63,7 @@ def process_result_files(result_files_dir):
 def main(input_csv_path, result_files_dir, output_csv_path):
     # Procesar archivos result
     result_data = process_result_files(result_files_dir)
+
     # Leer el CSV original y crear el nuevo
     with (
         open(input_csv_path, "r", encoding="utf-8") as input_file,
@@ -92,25 +76,16 @@ def main(input_csv_path, result_files_dir, output_csv_path):
         writer.writeheader()
 
         for row in reader:
-            github_username = row["github_username"].strip().lower()
+            repo_name = row["student_repository_name"].strip().lower()
             updated_row = row.copy()
-            result_keys = result_data.keys()
-            # El github_username esta contenido dentro de alguna de las llaves del diccionario
-            # Buscar y asignar una variable llamada repo_match, la comparación debe ignorar mayúsculas
-            repo_match = None
-            for key in result_keys:
-                if github_username in key:
-                    repo_match = key
-                    break
 
-            # Buscar coincidencia por username
-            if repo_match is not None:
-                matching_data = result_data[repo_match]
-                updated_row["student_repository_name"] = matching_data["repo_name"]
+            # Buscar coincidencia por nombre de repositorio
+            if repo_name in result_data:
+                matching_data = result_data[repo_name]
                 updated_row["realimentacion"] = matching_data["feedback"]
             else:
                 updated_row["realimentacion"] = ""
-                print(f"Advertencia: No se encontró feedback para {github_username}")
+                print(f"Advertencia: No se encontró feedback para {repo_name}")
 
             writer.writerow(updated_row)
 
