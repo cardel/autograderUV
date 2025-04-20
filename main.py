@@ -19,27 +19,28 @@ class PDF(FPDF):
 
 num_examenes = 4
 num_correctas = 14
-num_preguntas = 28
-fecha = "01 de Abril de 2025"
-materia = "Infraestructuras paralelas y distribuidas"
+num_preguntas = 32
+fecha = "03 de Abril de 2025"
+materia = "Fundamentos de compilación e interpretación de lenguajes de programación"
 examen = "Primer exámen"
 resultados_aprendizaje = (
-    "RA1: Desarrolla programas paralelos en ambientes donde no se comparte memoria",
+    "RA1: Utiliza gramáticas independientes del contexto,Analizadores léxicos y sintácticos",
+    "RA2: Aplica técnicas de Representación de programas y análisis semántico"
 )
 
 
 codificacion_preguntas = np.array(
-[
-    [6, 2, 19, 1, 13, 5, 12, 23, 7, 8, 9, 21, 25, 28, 26],
-    [23, 25, 24, 27, 20, 1, 22, 4, 12, 2, 21, 11, 6, 19, 5],
-    [13, 20, 9, 14, 19, 6, 27, 22, 24, 23, 16, 17, 12, 4, 15],
-    [11, 9, 17, 22, 8, 27, 24, 20, 7, 2, 5, 4, 18, 23, 26]
+ [
+    [18, 7, 13, 20, 8, 15, 6, 4, 1, 14, 25, 23, 32, 26, 28],
+    [6, 2, 5, 13, 9, 3, 12, 1, 8, 4, 29, 24, 27, 31, 23],
+    [5, 13, 17, 4, 20, 1, 14, 9, 12, 10, 23, 28, 31, 26, 27],
+    [2, 16, 1, 17, 10, 4, 8, 20, 15, 3, 28, 23, 29, 24, 32]
 ]
 )
 
 codificacion_preguntas = (codificacion_preguntas - 1).tolist()
 
-resultados_aprendizaje_generales = [[i for i in range(0, 28)]]
+resultados_aprendizaje_generales = [[i for i in range(0, 23)],[i+23 for i in range(0, 10)]]
 
 # Fin de variables iniciales del programa
 preg_res_aprendizaje = []
