@@ -15,7 +15,7 @@ def procesar_csv():
             usuarios.append(
                 {
                     "ID": row["Número de ID"],
-                    "github_original": row["Indicar su usuario de Github"]
+                    "github_original": row["github"]
                     .strip()
                     .lower(),
                     "email": row["Correo electrónico"],
