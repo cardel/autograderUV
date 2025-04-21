@@ -167,6 +167,6 @@ if __name__ == "__main__":
         )
     elif option == 5:
         codigo_estudiante = input("Ingrese el código del estudiante: ")
-        print(data[data["codigo"] == codigo_estudiante]["Nombre de archivo"])
+        print(data[data["codigo"] == codigo_estudiante]["File name"])
     else:
         print("Opcion no válida")
