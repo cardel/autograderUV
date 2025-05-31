@@ -15,31 +15,31 @@ fi
 while read -r repo_url; do
     # Extraer owner/repo
     owner_repo=$(echo "$repo_url" | sed 's|https://github.com/||')
-    
+
     echo "Procesando: $owner_repo"
-    
+
     # Obtener PRs abiertos
     pr_numbers=$(gh pr list -R "$owner_repo" --json number -q '.[].number' 2>/dev/null)
-    
+
     if [ -z "$pr_numbers" ]; then
         echo "No hay pull requests abiertos"
         continue
     fi
-    
+
     # Aprobar y mergear cada PR
     for pr_num in $pr_numbers; do
         echo "Merging PR #$pr_num (Classroom Sync)"
-        
+
         # Mergear sin borrar rama (que no existe)
         gh pr merge "$pr_num" -R "$owner_repo" \
             --merge \
             --subject "Merge automático: Sync Assignment" \
             <<< "y"
-        
+
         # Esperar entre operaciones
         sleep 1
     done
-    
+
     echo "--------------------------------------"
 done < repo.txt
 

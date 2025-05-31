@@ -46,7 +46,7 @@ def generarInformeEstudiantes(
         pdf.line(100, 76, 100, 68)
         pdf.text(105, 74, "Respuesta correcta")
         pdf.line(155, 76, 155, 68)
-        pdf.text(160, 74, "Desmpeño")
+        pdf.text(160, 74, "Desempeño")
         pdf.line(5, 76, 200, 76)
         pdf.line(200, 76, 200, 68)
 
@@ -134,28 +134,28 @@ def generarInformeEstudiantes(
             )
             y += movy
         pos += y - 10
-        pdf.set_font("Times", "B", 22)
-        pdf.text(10, 130 + pos, "Mapeo de preguntas:")
-
-        posx = 0
-        pos += 10
-        pdf.set_font("Times", "", 16)
-        pdf.line(5, 125 + pos, 202, 125 + pos)
-        pdf.text(10, 130 + pos, "Pregunta exámen")
-        pdf.text(10, 140 + pos, "Solucionario")
-        pdf.line(5, 145 + pos, 202, 145 + pos)
-        pdf.line(5, 125 + pos, 5, 145 + pos)
-
-        for i in range(0, len(codificacion_preguntas[int(tipo_examen)])):
-            pdf.line(51 + posx, 125 + pos, 51 + posx, 145 + pos)
-            pdf.text(54 + posx, 130 + pos, str(i + 1))
-            pdf.text(
-                54 + posx,
-                140 + pos,
-                str(codificacion_preguntas[int(tipo_examen)][i] + 1),
-            )
-            posx += 10
-        pdf.line(202, 125 + pos, 202, 145 + pos)
+        # pdf.set_font("Times", "B", 22)
+        # pdf.text(10, 130 + pos, "Mapeo de preguntas:")
+        #
+        # posx = 0
+        # pos += 10
+        # pdf.set_font("Times", "", 16)
+        # pdf.line(5, 125 + pos, 202, 125 + pos)
+        # pdf.text(10, 130 + pos, "Pregunta exámen")
+        # pdf.text(10, 140 + pos, "Solucionario")
+        # pdf.line(5, 145 + pos, 202, 145 + pos)
+        # pdf.line(5, 125 + pos, 5, 145 + pos)
+        #
+        # for i in range(0, len(codificacion_preguntas[int(tipo_examen)])):
+        #     pdf.line(51 + posx, 125 + pos, 51 + posx, 145 + pos)
+        #     pdf.text(54 + posx, 130 + pos, str(i + 1))
+        #     pdf.text(
+        #         54 + posx,
+        #         140 + pos,
+        #         str(codificacion_preguntas[int(tipo_examen)][i] + 1),
+        #     )
+        #     posx += 10
+        # pdf.line(202, 125 + pos, 202, 145 + pos)
         pos += 30
         pdf.set_font("Times", "B", 22)
         """
