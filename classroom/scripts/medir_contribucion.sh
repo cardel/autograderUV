@@ -43,6 +43,7 @@ analyze_repo() {
     local total_subs=0
     local total_loc=0
     declare -A user_totals  # Array asociativo para totales por usuario
+    declare -a active_authors # Array para autores con contribuciones > 0
     
     # Primera pasada para calcular totales globales y por usuario
     while read -r i; do
@@ -54,20 +55,24 @@ analyze_repo() {
         user_subs=$(echo "$stats" | awk '{print $2}')
         user_loc=$(echo "$stats" | awk '{print $3}')
         
-        # Acumular totales globales
-        total_added=$((total_added + user_added))
-        total_subs=$((total_subs + user_subs))
-        total_loc=$((total_loc + user_loc))
-        
-        # Guardar totales por usuario
-        user_totals["$i"]="$user_added $user_subs $user_loc"
+        # Si el usuario tiene contribuciones > 0 en algún campo
+        if [[ $user_added -gt 0 || $user_subs -gt 0 || $user_loc -ne 0 ]]; then
+            # Acumular totales globales
+            total_added=$((total_added + user_added))
+            total_subs=$((total_subs + user_subs))
+            total_loc=$((total_loc + user_loc))
+            
+            # Guardar totales por usuario
+            user_totals["$i"]="$user_added $user_subs $user_loc"
+            active_authors+=("$i")
+        fi
     done <<< "$authors"
     
-    # Segunda pasada para mostrar estadísticas con porcentajes
-    while read -r i; do
-		read -r user_added user_subs user_loc <<< "${user_totals["$i"]}"
+    # Segunda pasada para mostrar estadísticas con porcentajes (solo autores activos)
+    for i in "${active_authors[@]}"; do
+        read -r user_added user_subs user_loc <<< "${user_totals["$i"]}"
 
-		echo "Autor: $i" | tee -a "$output_file"
+        echo "Autor: $i" | tee -a "$output_file"
         # Calcular porcentajes de contribución total
         local pct_total_add=0
         local pct_total_sub=0
@@ -75,7 +80,11 @@ analyze_repo() {
         
         if [ $total_added -gt 0 ]; then
             pct_total_add=$(echo "scale=2; $user_added * 100 / $total_added" | bc)
+        fi
+        if [ $total_subs -gt 0 ]; then
             pct_total_sub=$(echo "scale=2; $user_subs * 100 / $total_subs" | bc)
+        fi
+        if [ $total_loc -ne 0 ]; then
             pct_total_loc=$(echo "scale=2; $user_loc * 100 / $total_loc" | bc)
         fi
         
@@ -86,11 +95,12 @@ analyze_repo() {
         echo "    - Líneas netas: $user_loc ($pct_total_loc% del total)" | tee -a "$output_file"
         
         # Estadísticas para documentos (solo .md en docs/)
-		doc_stats=$(git log --author="$i" --pretty=tformat: --numstat --glob='*docs*/*.md' | \
-			awk '{add += $1; subs += $2; loc += $1 - $2} END {
-				printf "  - Documentación (.md en docs/):\n    - Líneas agregadas: %s\n    - Líneas eliminadas: %s\n    - Líneas netas: %s\n", add, subs, loc
-			}')
-        echo "$doc_stats" | tee -a "$output_file"
+        doc_stats=$(git log --author="$i" --pretty=tformat: --numstat --glob='*docs*/*.md' | \
+            awk '{add += $1; subs += $2; loc += $1 - $2} END {
+                if (add == 0 && subs == 0 && loc == 0) next
+                printf "  - Documentación (.md en docs/):\n    - Líneas agregadas: %s\n    - Líneas eliminadas: %s\n    - Líneas netas: %s\n", add, subs, loc
+            }')
+        [ -n "$doc_stats" ] && echo "$doc_stats" | tee -a "$output_file"
         
         # Estadísticas para código (excluyendo .md)
         code_stats=$(git log --author="$i" --pretty=tformat: --numstat -- . ":!*.md" | \
@@ -101,30 +111,31 @@ analyze_repo() {
         
         # Estadísticas de código significativo (ignorando espacios y comentarios)
         echo "  - Código significativo (excluyendo espacios y comentarios):" | tee -a "$output_file"
-        git log --author="$i" --pretty=tformat:%H | while read -r commit; do
+        significant_lines=$(git log --author="$i" --pretty=tformat:%H | while read -r commit; do
             git show --pretty="format:" --name-only "$commit" | \
             grep -vE '\.md$' | while read -r file; do
                 [ -f "$file" ] || continue
-                # Filtrar cambios significativos
                 git show "$commit" -- "$file" | \
                     awk '!/^[ \t]*($|#|\/{2})/ && !/^\/\*/,/\*\// {print}' | \
                     wc -l | awk '{print $1}'
             done
-        done | awk '{add += $1} END {printf "    - Líneas significativas agregadas: %s\n", add}' | tee -a "$output_file"
+        done | awk '{add += $1} END {print add}')
+        
+        echo "    - Líneas significativas agregadas: $significant_lines" | tee -a "$output_file"
         
         echo "" | tee -a "$output_file"
-    done <<< "$authors"
+    done
     
-    # Mostrar contribución porcentual por autor
+    # Mostrar contribución porcentual por autor (solo activos)
     echo "Contribución porcentual por autor (basado en líneas netas):" | tee -a "$output_file"
-    while read -r i; do
+    for i in "${active_authors[@]}"; do
         read -r _ _ user_loc <<< "${user_totals["$i"]}"
         pct_total_loc=0
-        if [ $total_loc -gt 0 ]; then
+        if [ $total_loc -ne 0 ]; then
             pct_total_loc=$(echo "scale=2; $user_loc * 100 / $total_loc" | bc)
         fi
         echo "  - $i: $pct_total_loc%" | tee -a "$output_file"
-    done <<< "$authors"   
+    done   
     # Mostrar resumen global del repositorio
     echo ""
     echo "Resumen global del repositorio:" | tee -a "$output_file"
