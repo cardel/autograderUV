@@ -10,16 +10,16 @@ import os
 # Configura tus datos
 USERNAME = os.getenv("MOODLE_USERNAME")
 PASSWORD = os.getenv("MOODLE_PASSWORD")
-TAREA_ID = "2357737"  # Cambia por el ID real de la tarea
+TAREA_ID = "2356729"  # Cambia por el ID real de la tarea
 CSV_PATH = "rubrica.csv"  # Ruta al archivo CSV
 NIVELES = [0, 5, 10, 15]  # Puntos por nivel
 DESCRIPCION = (
-    "Rubrica del segundo taller de  Programación Funcional 2025-I Univalle Sede Tulua"
+    "Rubrica del tercer taller de  Programación Funcional 2025-I Univalle Sede Tulua"
 )
 NOMBRE_RUBRICA = "PFC Taller 2 2025-1"  # Nombre de la rúbrica
 
 # Inicia navegador
-driver = webdriver.Chrome()
+driver = webdriver.Firefox()  #
 wait = WebDriverWait(driver, 10)
 
 # 1. Iniciar sesión
