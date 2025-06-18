@@ -21,10 +21,10 @@ def crear_codigo(value):
             return "9"
         else:
             raise ValueError("Error en la codificación de la pregunta")
-    
+
 
 def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha, examen, codificacion_preguntas):
-    data = pd.read_csv("data/resultados.csv")
+    data = pd.read_csv("data/resultados.csv", delimiter=";")
     tipo_parcial = data["tipo.Pregunta023"].apply(crear_codigo)
     data.drop(columns=["tipo.Pregunta023"], inplace=True)
 
@@ -62,11 +62,11 @@ def procesar(num_correctas, num_examenes, codificacion_examenes, materia, fecha,
     dataEstudiante = np.array(dataEstudiante)
     data[["nombre","correo","numeroID"]] = dataEstudiante
     datos_examen = {"nombre": materia, "fecha": fecha, "examen": examen}
-    
+
     data.fillna("No marcada", inplace=True)
-    
-    #Lemos las 20 preguntas
-    respuestas_csv = pd.read_csv("data/respuestas.csv") 
+
+    #Lemos las preguntas
+    respuestas_csv = pd.read_csv("data/respuestas.csv")
     respuestas_totales = []
     for codif in codificacion_preguntas:
         respuestas_totales.append(respuestas_csv.iloc[:,codif])

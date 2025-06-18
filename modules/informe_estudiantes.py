@@ -165,5 +165,5 @@ def generarInformeEstudiantes(
         pdf.text(10, 150 + pos, "Escribe un correo a: carlos.andres.delgado@correounivalle.edu.co")
         """
         pdf.add_page()
-        pdf.image("data/procesado/" + nombrearchivo + ".jpg", x=10, y=2, w=200, h=280)
+        pdf.image("data/escaneado/" + nombrearchivo, x=10, y=2, w=200, h=280)
         pdf.output("output/reports/" + nombre + "-" + codigo + ".pdf", "F")
