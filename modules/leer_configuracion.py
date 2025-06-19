@@ -18,7 +18,7 @@ def leer_configuracion(archivo):
     # Leer sección [Resultados de Aprendizaje]
     resultados_aprendizaje = [
         config.get('Resultados de Aprendizaje', 'ra1'),
-        config.get('Resultados de Aprendizaje', 'ra2')
+        #config.get('Resultados de Aprendizaje', 'ra2')
     ]
 
     # Leer sección [Codificación de Preguntas]

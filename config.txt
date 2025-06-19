@@ -1,20 +1,20 @@
 [Config]
-num_examenes = 1
+num_examenes = 4
 num_correctas = 14
-num_preguntas = 15
+num_preguntas = 60
 fecha = 10 de Junio de 2025
-materia = Fundamentos de programación funcional y concurrente
-examen = Exámen final
+materia = Infraestructuras paralelas y distribuidas
+examen = Parcial 2
 
 [Resultados de Aprendizaje]
-ra1 = Utiliza gramáticas independientes del contexto
-ra2 = Aplica técnicas de Representación de programas y análisis semántico
+ra1 = Desarrolla programas de cómputo para ambientes de cómputo donde no se comparte memoria
 
 [Codificación de Preguntas]
 preguntas =
-    1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
-
+    19,25,9,10,54,23,48,36,59,58,57,27,33,40,8
+    15,30,51,8,52,31,58,26,54,11,5,6,33,36,3
+    32,44,28,33,12,25,4,60,14,56,31,20,10,58,41
+    22,12,13,60,20,46,37,1,55,28,50,26,19,32,49
 [Resultados de Aprendizaje Generales]
 generales =
-    5,6,7,8,9
-    0,1,2,3,4,10,11,12,13,14
+    0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59
