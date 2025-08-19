@@ -10,19 +10,39 @@ driver = webdriver.Chrome()
 
 # Lista de correos de los usuarios
 
+cod_curso = "98446"
+
 codigo_usuarios = [
-2259606,
-2259353,
-2059962,
-2259606,
-2459709,
-2159979,
-2160364,
-2160331,
-2059997,
-2060174,
-2060257,
-2160331
+2160253,
+2459537,
+2359660,
+2569453,
+2459411,
+2379918,
+2380581,
+2380661,
+2459437,
+2359494,
+2459519,
+2067621,
+2459503,
+2510208,
+2559711,
+2569459,
+2266033,
+2459486,
+2559710,
+2459662,
+2359397,
+2569134,
+2569068,
+2459608,
+2380766,
+2510206,
+2569104,
+2380741,
+2459542
+
 ]
 # Paso 1: Iniciar sesión en Moodle
 driver.get("https://campusvirtual.univalle.edu.co/moodle/login/index.php")
@@ -34,7 +54,7 @@ driver.find_element(By.ID, "loginbtn").click()
 time.sleep(3)
 
 # Paso 2: Navegar al curso
-driver.get("https://campusvirtual.univalle.edu.co/moodle/user/index.php?id=89460")
+driver.get("https://campusvirtual.univalle.edu.co/moodle/user/index.php?id=" + cod_curso)
 
 # Paso 3: Ir a la sección de inscripciones
 driver.find_element(By.XPATH, "//input[@value='Matricular usuarios']").click()  # Clic en "Matricular usuarios"
