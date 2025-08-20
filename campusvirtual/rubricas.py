@@ -10,13 +10,13 @@ import os
 # Configura tus datos
 USERNAME = os.getenv("MOODLE_USERNAME")
 PASSWORD = os.getenv("MOODLE_PASSWORD")
-TAREA_ID = "2373158"  # Cambia por el ID real de la tarea
+TAREA_ID = "2373241"  # Cambia por el ID real de la tarea
 CSV_PATH = "rubrica.csv"  # Ruta al archivo CSV
 NIVELES = [0, 5, 10, 15]  # Puntos por nivel
 DESCRIPCION = (
-    "Proyecto FLP 2025-I Univalle Sede Tulua"
+    "Proyecto II ADA II 2025-1 Univalle Sede Tulua"
 )
-NOMBRE_RUBRICA = "Proyecto FLP 2025-1"  # Nombre de la rúbrica
+NOMBRE_RUBRICA = "Proyecto II ADA II 2025-1"  # Nombre de la rúbrica
 
 # Inicia navegador
 driver = webdriver.Chrome()  # Asegúrate de tener el driver de Chrome instalado
