@@ -12,28 +12,9 @@ driver = webdriver.Chrome()
 # Lista de correos de los usuarios
 
 cod_curso = "98446"
-
+username = os.getenv("MOODLE_USERNAME")
+password = os.getenv("MOODLE_PASSWORD")
 codigo_usuarios = [
-    2160253,
-    2459537,
-    2359660,
-    2569453,
-    2459411,
-    2379918,
-    2380581,
-    2380661,
-    2459437,
-    2359494,
-    2459519,
-    2067621,
-    2459503,
-    2510208,
-    2559711,
-    2569459,
-    2266033,
-    2459486,
-    2559710,
-    2459662,
     2359397,
     2569134,
     2569068,
@@ -44,9 +25,6 @@ codigo_usuarios = [
     2380741,
     2459542,
 ]
-# Get enviromental variables
-username = os.getenv("MOODLE_USERNAME")
-password = os.getenv("MOODLE_PASSWORD")
 
 # Paso 1: Iniciar sesión en Moodle
 driver.get("https://campusvirtual.univalle.edu.co/moodle/login/index.php")
@@ -99,5 +77,6 @@ driver.find_element(
 ).click()  # Clic en "Matricular usuarios"
 
 # Cerrar el navegador al finalizar
-time.sleep(2)  # Esperar un momento para confirmar que se realizó la matriculación
+# Esperar un momento para confirmar que se realizó la matriculación
+time.sleep(2)
 driver.quit()
