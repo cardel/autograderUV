@@ -11,21 +11,20 @@ driver = webdriver.Chrome()
 
 # Lista de correos de los usuarios
 
-cod_curso = "98446"
+cod_curso = "98445"
 username = os.getenv("MOODLE_USERNAME")
 password = os.getenv("MOODLE_PASSWORD")
 codigo_usuarios = [
-    2359397,
-    2569134,
-    2569068,
-    2459608,
-    2380766,
-    2510206,
-    2569104,
-    2380741,
-    2459542,
+    2259385,
+    2059817,
+    2459687,
+    2380372,
+    1958640,
+    2059959,
+    2259518,
+    2266121,
+    2266123,
 ]
-
 # Paso 1: Iniciar sesión en Moodle
 driver.get("https://campusvirtual.univalle.edu.co/moodle/login/index.php")
 driver.find_element(By.ID, "username").send_keys(username)
