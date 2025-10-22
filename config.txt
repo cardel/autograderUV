@@ -1,10 +1,10 @@
 [Config]
-num_examenes = 1
-num_correctas = 14
-num_preguntas = 15
-fecha = 10 de Junio de 2025
-materia = Fundamentos de programación funcional y concurrente
-examen = Exámen final
+num_examenes = 4
+num_correctas = 9
+num_preguntas = 22
+fecha = 14 de octubre de 2025
+materia = Fundamentos de interpretación de lenguajes de programación
+examen = Primer parcial
 
 [Resultados de Aprendizaje]
 ra1 = Utiliza gramáticas independientes del contexto
@@ -12,9 +12,12 @@ ra2 = Aplica técnicas de Representación de programas y análisis semántico
 
 [Codificación de Preguntas]
 preguntas =
-    1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
-
+    18,7,13,20,8,15,6,4,1,14
+    6,2,5,13,9,3,12,1,8,4
+    5,13,17,4,20,1,14,9,12,10
+    2,16,1,17,10,4,8,20,15,3
+    
 [Resultados de Aprendizaje Generales]
 generales =
-    5,6,7,8,9
-    0,1,2,3,4,10,11,12,13,14
+    0,1,2,3,4,5,6,7,8,9
+    10,11,12,13,14,15,16,17,18,19,20,21
